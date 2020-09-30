@@ -34,14 +34,14 @@ In order to discourage this, the application is designed to focus on **behavior*
 In a nutshell, in the words of _Mahatma Gandhi_, **"Be the change you wish to see in the world"**.
 
 ### Application Functionality
-**_Note that the application is currently in the Design/Planning Phase_**
+**_Note that the application is currently in the Development Phase_**
 
 _Each phase implicitly includes a functional improvements/refactoring, testing and bug fix feedback loop which must be completed before moving to the next phase._
 
 *Functionality to be introduced in Phase 1*
 - Target running on a Windows host with a MSSQL 2019 Database.
 - Server level (i.e. for the entire website, not at an individual user level) implementation of language and culture based on configuration settings.
-- Not withstanding the above, implement only language resource files and culture in English for the USA in this version of the application. 
+- Implement only language resource files and culture in English for the USA in this version of the application. 
 - Create User Terms and Conditions, Privacy and Cookie Policy Templates
 - User Registration and secure login using User Names for the primary login using Microsoft Blazor OAuth EF technology included with the Blazor Web Server project template.
 - Registration Confirmation using unique email address which will also be required but not used to log in.
@@ -51,10 +51,10 @@ _Each phase implicitly includes a functional improvements/refactoring, testing a
 - Allow anonymous view only access to Website including Institution/Civil Servant/Incident search capabilities.
 
 *Provisional Functionality to be introduced in Phase 2*
-- Create Modular comments section which will eventually be able to be attached to civil servants, government institutions and incidents, but implement only against incidents in this phase as MVP proof of concept in order to gather feedback and implement improvements.
+- Create Modular comments section which will eventually be able to be attached to civil servants, government institutions and incidents (and eventually other data entities in future versions), but implement only against incidents in this phase as MVP proof of concept in order to gather feedback and implement improvements.
 
 *Provisional Functionality to be introduced in Phase 3*
-- Implement Moderator and Administrator roles.
+- Implement Moderator and Administrator roles/menus.
 - Add functionality for an Administrator to block user accounts
 - Implement Moderation functionality in the comments section.
 
@@ -62,7 +62,7 @@ _Each phase implicitly includes a functional improvements/refactoring, testing a
 - Allow users from other countries to register, log in and comment only.
 
 *Provisional Functionality to be introduced in Phase 5*
-- Create a "Resources" section and allow Administrators to update it with useful links.
+- Create a "Resources" section and allow Administrators/Moderators/Users to update it with useful links to sources for help or information useful to the targeted audience, like links to statutes, organizations offering support, complaint resources etc.
 
 *Provisional Functionality to be introduced in Phase 6*
 - Add comments to government institutions
@@ -84,14 +84,22 @@ _**Publish of v1**_
 
 
 _**Potential Functionality to be Considered for future releases (in no particular order):**_
+- Add system maintenance service application and API functionality as well as [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/) to perform system maintenance, check for spam comments, send notification emails, etc.
+- Add functionality to allow for individual or digest email notification to users on comment replies or mentions dependent on user preferences 
 - Add calendar and allow users based in the same country as the server to schedule events
-- Notify users that have opted in of upcoming events via email
-- Allow users to input (https://www.change.org/), (https://secure.avaaz.org/page/en/), etc. petitions to the site and determine strategies to raise awareness among registered users
-- Allow for creation and publication of blog posts
-- Allow for the creation and email of Admin created content
-- Allow for users to subscribe to regions/cities/counties/states/provinces and send emails making them aware of new incidents in those places
+- Allow for creation and publication of Blog Posts/Newsletters/Articles
+- Allow users to input (https://www.change.org/), (https://secure.avaaz.org/page/en/), etc. petitions to the site and determine strategies to raise awareness among registered users (Likely using Blog Posts and/or Incident Links)
+- Allow for the creation of official registers, like the [Brady List](https://en.wikipedia.org/wiki/Brady_disclosure) in the US and compilation of information from those registers in a single, searchable location.  
+- Allow for creation and publication of FAQ section 
+- Allow for creation and distribution of Alerts, (e.g. of protesters being arrested; traffic police pulling people over to extract bribes, etc.)  
+- Allow for users to subscribe to regions/cities/counties/states/provinces and send emails making them aware of new incidents/calendar events/alerts/blog posts/articles/official register entries in those places
+- Add hashtag functionality 
 - Add functionality to share things to Facebook, Twitter, etc.
+- Add functionality to allow Google ads to be switched on - generic or user specific dependent on user preferences 
+- Add functionality for a user to choose an avatar as their profile picture
+- Add functionality for a user to upload an image of their choice to use as their profile picture
 - Create MySQL Database Library 
+- Create MariaDB Database Library 
 - Create Linux Port Web Host Publish package and instructions
 - Allow for optional configuration to use and implement Google ads to contribute to hosting costs incurred
 - Allow for optional acceptance of PayPal donations
@@ -100,7 +108,7 @@ _**Potential Functionality to be Considered for future releases (in no particula
 ### Core Design Principles
 - **User Data Protection is key.**  Collect only the minimum essential personal information required to provide the necessary functionality and go above and beyond to protect personal information. 
 - Respect [EU GDPR Guidelines](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) as much as is practically possible. 
-- Use an "opt in" approach for all email communications and potential targeted advertising.
+- Use an "double opt in" approach for all email communications and potential targeted advertising.
 - Design the Website Application to allow for disability accessibility by respecting [WAI-ARIA](https://en.wikipedia.org/wiki/WAI-ARIA) [Authoring Practices](https://www.w3.org/TR/wai-aria-practices/). 
 - Design for Progressive Enhancement but consider the future path and adopt a balanced approach.
 - Consider affordability of hosting in the fundamental design, including but not limited to consideration of maximum DB size, bandwidth caps, etc.
@@ -114,4 +122,4 @@ _**Potential Functionality to be Considered for future releases (in no particula
 
 
 ### Last Updated
-24 September 2020 UTC
+30 September 2020 UTC
