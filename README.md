@@ -45,7 +45,6 @@ _Each phase implicitly includes a functional improvements/refactoring, testing a
 - Create User Terms and Conditions, Privacy and Cookie Policy Templates
 - User Registration and secure login using User Names for the primary login using Microsoft Blazor OAuth EF technology included with the Blazor Web Server project template.
 - Registration Confirmation using unique email address which will also be required but not used to log in.
-- Create the functionality for users to change their email address.
 - Allow only users from the same country as the Server Application Configuration Settings to register and log in. 
 - Allow only logged in users from the same country as the Server Configuration Settings to to create records for incidents, civil servants and government institutions. 
 - Allow anonymous view only access to Website including Institution/Civil Servant/Incident search capabilities.
@@ -85,6 +84,7 @@ _**Publish of v1**_
 
 _**Potential Functionality to be Considered for future releases (in no particular order):**_
 - Add system maintenance service application and API functionality as well as [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/) to perform system maintenance, check for spam comments, send notification emails, etc.
+- Create the functionality for users to change their email address.
 - Add functionality to allow for individual or digest email notification to users on comment replies or mentions dependent on user preferences 
 - Add calendar and allow users based in the same country as the server to schedule events
 - Allow for creation and publication of Blog Posts/Newsletters/Articles
@@ -94,8 +94,8 @@ _**Potential Functionality to be Considered for future releases (in no particula
 - Allow for creation and distribution of Alerts, (e.g. of protesters being arrested; traffic police pulling people over to extract bribes, etc.)  
 - Allow for users to subscribe to regions/cities/counties/states/provinces and send emails making them aware of new incidents/calendar events/alerts/blog posts/articles/official register entries in those places
 - Add hashtag functionality 
+- Add culture specific json files for South-Africa
 - Add functionality to share things to Facebook, Twitter, etc.
-- Add functionality to allow Google ads to be switched on - generic or user specific dependent on user preferences 
 - Add functionality for a user to choose an avatar as their profile picture
 - Add functionality for a user to upload an image of their choice to use as their profile picture
 - Create MySQL Database Library 
@@ -103,6 +103,7 @@ _**Potential Functionality to be Considered for future releases (in no particula
 - Create Linux Port Web Host Publish package and instructions
 - Allow for optional configuration to use and implement Google ads to contribute to hosting costs incurred
 - Allow for optional acceptance of PayPal donations
+- Allow for optional acceptance of Bitcoin donations
 
 
 ### Core Design Principles
