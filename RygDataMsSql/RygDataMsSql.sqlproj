@@ -64,4 +64,8 @@
     <Folder Include="dbo\StoredProcedures" />
     <Folder Include="PublishLocations" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\UserPendRegAvailable.sql" />
+    <Build Include="dbo\ryg.sql" />
+  </ItemGroup>
 </Project>

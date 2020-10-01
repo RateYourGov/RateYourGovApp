@@ -1,0 +1,2 @@
+﻿CREATE SCHEMA [ryg]
+--    AUTHORIZATION USER_NAME; --
