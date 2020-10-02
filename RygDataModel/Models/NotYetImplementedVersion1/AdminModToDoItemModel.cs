@@ -27,7 +27,7 @@ namespace RygDataModel.Models
         /// (I)ncident; civil s(E)rvant; instituti(O)n; (C)alendar event; (B)log post; (S)tateprovinceregion; county(A)rea; ci(T)ty; comme(N)tthread; (R)eply; (M)ention; o(F)ficial register
         /// </summary>
         /// <example>
-        /// LinkedItemType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// LinkedItemType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string LinkedItemType { get; set; }
         public int LinkedItemId { get; set; }

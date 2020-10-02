@@ -22,7 +22,7 @@ namespace RygDataModel.Models
         /// The reason that registration was not possible: (L)imit exceeded; registerby(I)nvitationonly; allowoutof(C)ountryuserregistration; (U)nder construction 
         /// </summary>
         /// <example>
-        /// denyReason == RygDataModel.Helper.StringRegDenyType(RygDataModel.RegistrationDenyReason.LimitExceeded)
+        /// denyReason == RygDataModel.ModelHelper.StringRegDenyType(RygDataModel.RegistrationDenyReason.LimitExceeded)
         /// </example>
         public string RegistrationDeniedReason { get; set; }
 

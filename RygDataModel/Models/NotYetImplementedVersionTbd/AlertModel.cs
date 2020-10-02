@@ -50,7 +50,7 @@ namespace RygDataModel.Models
         /// AlertLinkType: Links to UrlLinkType table on UrlLinkType.LinkTypeCharacter, see UrlLinkTypeModel. 
         /// </summary>
         /// <remarks>
-        /// See UrlLinkTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.Helper.StringLinkType.
+        /// See UrlLinkTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.ModelHelper.StringLinkType.
         /// </remarks>
         public string AlertLinkType { get; set; }
         public string DescriptiveText { get; set; }     //required when UrlLinkType.RequiresInputOfDescriptiveText

@@ -25,7 +25,7 @@ namespace RygDataModel.Models
         /// Records will be marked as read and deleted based on application settings.
         /// </remarks>
         /// <example>
-        /// forToDataEntityType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// forToDataEntityType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string ForToDataEntityType { get; set; }
         public string ForToDataEntityGuid { get; set; }

@@ -19,7 +19,7 @@ namespace RygDataModel.Models
         /// Note that the data entities above will always have a GUID string Id.
         /// </remarks>
         /// <example>
-        /// forEntityType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// forEntityType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string ForEntityType { get; set; }
         public string ForEntityId { get; set; }
@@ -28,7 +28,7 @@ namespace RygDataModel.Models
         /// IncidentLinkType: Links to UrlLinkType table on UrlLinkType.LinkTypeCharacter, see UrlLinkTypeModel. 
         /// </summary>
         /// <remarks>
-        /// See UrlLinkTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.Helper.StringLinkType.
+        /// See UrlLinkTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.ModelHelper.StringLinkType.
         /// </remarks>
         public string IncidentLinkType { get; set; }
         public string DescriptiveText { get; set; }     //required when UrlLinkType.RequiresInputOfDescriptiveText

@@ -21,7 +21,7 @@ namespace RygDataModel.Models
         /// </summary>
         /// <remarks>
         /// <example>
-        /// SubToDataEntityType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// SubToDataEntityType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string FlaggedEntityType { get; set; }
         public string FlaggedEntityGuid { get; set; }

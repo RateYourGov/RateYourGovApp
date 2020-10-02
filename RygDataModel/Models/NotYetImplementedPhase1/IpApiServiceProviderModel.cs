@@ -38,7 +38,7 @@ namespace RygDataModel.Models
         /// authentication(T)oken; (U)serpassword
         /// </summary>
         /// <example>
-        /// authType == RygDataModel.Helper.StringApiAuthType(RygDataModel.ApiAuthType.AuthenticationToken)
+        /// authType == RygDataModel.ModelHelper.StringApiAuthType(RygDataModel.ApiAuthType.AuthenticationToken)
         /// </example>
         public string AuthenticationType { get; set; }
 
@@ -53,7 +53,7 @@ namespace RygDataModel.Models
         /// (J)son; (X)ml; (T)ext.
         /// </summary>
         /// <example>
-        /// dataType == RygDataModel.Helper.StringReadDataType(RygDataModel.ReadDataType.Json).
+        /// dataType == RygDataModel.ModelHelper.StringReadDataType(RygDataModel.ReadDataType.Json).
         /// </example>
         public string ResponseDataFormat { get; set; }
 

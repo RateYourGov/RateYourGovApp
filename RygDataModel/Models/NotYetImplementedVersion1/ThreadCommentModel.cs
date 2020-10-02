@@ -24,7 +24,7 @@ namespace RygDataModel.Models
         /// Note that the data entities above will always have a GUID string Id.
         /// </remarks>
         /// <example>
-        /// LinkedToDataEntityType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// LinkedToDataEntityType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string LinkedToDataEntityType { get; set; }
         public string LinkedToDataEntityId { get; set; }

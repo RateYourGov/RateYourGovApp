@@ -81,7 +81,7 @@ namespace RygDataModel
         OnlineStream
     }
 
-    public class Helper
+    public class ModelHelper
     {
 
         /// <summary>

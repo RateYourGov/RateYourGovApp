@@ -8,7 +8,7 @@ namespace RygDataModel.Models
     /// Website Link Type used to show an icon next to the link to be loaded from the localized json file.
     /// </summary>
     /// <remarks>
-    /// NB: If you are adding/removing an item in this list, bear in mind that it may require code changes that depend on the RygDataModel.Helper.StringLinkType function or RygDataModel.LinkType enum.
+    /// NB: If you are adding/removing an item in this list, bear in mind that it may require code changes that depend on the RygDataModel.ModelHelper.StringLinkType function or RygDataModel.LinkType enum.
     /// </remarks>
     public class UrlLinkTypeModel
     {
@@ -16,7 +16,7 @@ namespace RygDataModel.Models
         /// LinkTypeCharacter: (Y)outube; yo(U)now; (N)ewsarticle; (B)log; (Ch)ange.org; (A)vaaz.org; (R)eddit; (T)witch; (O)ther  
         /// </summary>
         /// <example>
-        /// addLinkType == RygDataModel.Helper.StringLinkType(RygDataModel.LinkType.YouTube)
+        /// addLinkType == RygDataModel.ModelHelper.StringLinkType(RygDataModel.LinkType.YouTube)
         /// </example>
         public string LinkTypeCharacter { get; set; }               //primary unique key
         public string LinkTypeName { get; set; }

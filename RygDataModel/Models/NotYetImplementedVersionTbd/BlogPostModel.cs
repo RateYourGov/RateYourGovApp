@@ -16,7 +16,7 @@ namespace RygDataModel.Models
         /// (B)log; (W)ebsite front page article; (N)ewsletter
         /// </summary>
         /// <example>
-        /// postType == RygDataModel.Helper.StringBlogType(RygDataModel.Helper.BlogType.Blog)
+        /// postType == RygDataModel.ModelHelper.StringBlogType(RygDataModel.BlogType.Blog)
         /// </example>
         public string PostType { get; set; }
 

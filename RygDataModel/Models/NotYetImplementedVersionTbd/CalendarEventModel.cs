@@ -20,7 +20,7 @@ namespace RygDataModel.Models
         /// EventTypeCharacter: Links to CalendarEventType table on CalendarEventType.LinkTypeCharacter, see CalendarEventTypeModel.CalendarEventTypeCharacter. 
         /// </summary>
         /// <remarks>
-        /// See CalendarEventTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.Helper.StringCalendarEventType.
+        /// See CalendarEventTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.ModelHelper.StringCalendarEventType.
         /// </remarks>
         public string EventTypeCharacter { get; set; }
 
@@ -32,7 +32,7 @@ namespace RygDataModel.Models
         /// RelatedEntityType: (I)ncident; instituti(O)n; (B)log post; a(L)ert; civil s(E)rvant.  
         /// </summary>
         /// <example>
-        /// forEntityType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// forEntityType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string RelatedEntityType { get; set; }       //null=not related
         public string RelatedEntityGuid { get; set; }       //null=not related
@@ -67,7 +67,7 @@ namespace RygDataModel.Models
         /// EventLinkType: Links to UrlLinkType table on UrlLinkType.LinkTypeCharacter, see UrlLinkTypeModel. 
         /// </summary>
         /// <remarks>
-        /// See UrlLinkTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.Helper.StringLinkType.
+        /// See UrlLinkTypeModel for use of the value to control logic in your code (should there be any) using RygDataModel.ModelHelper.StringLinkType.
         /// </remarks>
         public string EventLinkType { get; set; }
         public string DescriptiveText { get; set; }     //required when UrlLinkType.RequiresInputOfDescriptiveText

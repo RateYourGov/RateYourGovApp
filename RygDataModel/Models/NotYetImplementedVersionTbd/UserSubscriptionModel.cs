@@ -20,7 +20,7 @@ namespace RygDataModel.Models
         /// Note that the data entities above will always have a GUID string Id, Regional will have a numeric Id, Country will have a string Id.
         /// </remarks>
         /// <example>
-        /// SubscriptionType == RygDataModel.Helper.StringSubsType(RygDataModel.Helper.SubsType.DataEntity)
+        /// SubscriptionType == RygDataModel.ModelHelper.StringSubsType(RygDataModel.SubsType.DataEntity)
         /// </example>
         public string SubscriptionType { get; set; }
 
@@ -35,7 +35,7 @@ namespace RygDataModel.Models
         /// In the case of o(F)ficial register; a(L)ert; (C)alendar event; (B)log post allow additional filter on Regiontype.
         /// </remarks>
         /// <example>
-        /// SubToDataEntityType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// SubToDataEntityType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string SubToDataEntityType { get; set; }
         public string SubToDataEntityId { get; set; }
@@ -50,7 +50,7 @@ namespace RygDataModel.Models
         /// In the case of o(F)ficial register; a(L)ert; (C)alendar event; (B)log post allow additional filter on Regiontype.
         /// </remarks>
         /// <example>
-        /// SubToRegionType == RygDataModel.Helper.StringDbEntity(RygDataModel.Helper.DbEntity.Incident)
+        /// SubToRegionType == RygDataModel.ModelHelper.StringDbEntity(RygDataModel.DbEntity.Incident)
         /// </example>
         public string SubToRegionType { get; set; }
         public int SubToRegionId { get; set; }
