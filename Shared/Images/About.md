@@ -13,9 +13,9 @@ _For Example:_
 
 ### Image Source Information 
 Images should include a Markdown text file referencing the source of the image.  
-The file should share the exact same name as the image file (without the image size attributes) followed by ".source.md"  
+The file should share the exact same name as the image file (without the image size attributes and file type) followed by ".source.md"  
 
 _For Example:_
-- BannerLogo.png.source.md ($"{@ImageName}.{@ImageFileExt}.source.md") 
-- LogoImage.source.md ($"{@ImageName}.{@ImageFileExt}.source.md") 
+- BannerLogo.source.md ($"{@ImageName}.source.md") 
+- LogoImage.source.md ($"{@ImageName}.source.md") 
 
