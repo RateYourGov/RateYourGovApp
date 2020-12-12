@@ -25,7 +25,7 @@ _Having access to quantitative and specific information would, at the very least
 
 ### What this application is NOT intended for 
 - Harassment of civil servants in their personal capacity.
-- Malicious retribution, [Doxing involving Civil Servant's Private Information](https://en.wikipedia.org/wiki/Doxing) or [Slander](https://en.wikipedia.org/wiki/Defamation).
+- Malicious retribution, [Doxing involving Civil Servant's Private Information](https://en.wikipedia.org/wiki/Doxing) or [Defamation](https://en.wikipedia.org/wiki/Defamation).
 - Discrimination against **anyone** based on race, gender, religious or other beliefs, disabilities, sexual orientation or identity.  
 - Depriving _any individual_ of their legal or human rights.  
 
@@ -36,9 +36,12 @@ In a nutshell, in the words of _Mahatma Gandhi_, **"Be the change you wish to se
 ### Application Functionality
 **_Note that the application is currently in the Development Phase_**
 
-_Each phase implicitly includes a functional improvements/refactoring, testing and bug fix feedback loop which must be completed before moving to the next phase._
+_Each phase implicitly includes a functional improvements/refactoring, testing and bug fix feedback loop._
 
-*Functionality to be introduced in Phase 1*
+*Functionality to be introduced in Phase 1.1*
+- Create Under Construction template allowing optional email registration to be notified when site is ready.
+
+*Functionality to be introduced in Phase 1.2*
 - Target running on a Windows host with a MSSQL 2019 Database.
 - Server level (i.e. for the entire website, not at an individual user level) implementation of language and culture based on configuration settings.
 - Implement only language resource files and culture in English for the USA in this version of the application. 
@@ -49,40 +52,35 @@ _Each phase implicitly includes a functional improvements/refactoring, testing a
 - Allow only logged in users from the same country as the Server Configuration Settings to to create records for incidents, civil servants and government institutions. 
 - Allow anonymous view only access to Website including Institution/Civil Servant/Incident search capabilities.
 
-*Provisional Functionality to be introduced in Phase 2*
-- Create Modular comments section which will eventually be able to be attached to civil servants, government institutions and incidents (and eventually other data entities in future versions), but implement only against incidents in this phase as MVP proof of concept in order to gather feedback and implement improvements.
-
-*Provisional Functionality to be introduced in Phase 3*
+*Provisional Functionality to be introduced in Phase 1.3*
 - Implement Moderator and Administrator roles/menus.
 - Add functionality for an Administrator to block user accounts
-- Implement Moderation functionality in the comments section.
 
-*Provisional Functionality to be introduced in Phase 4*
-- Allow users from other countries to register, log in and comment only.
+*Provisional Functionality to be introduced in Phase 1.4*
+- Create a "Resources" section and allow Administrators/Moderators/Users to update it with useful links to sources for help or information useful to the targeted audience, like links to statutes, organizations offering support, complaint resources, useful videos etc.
 
-*Provisional Functionality to be introduced in Phase 5*
-- Create a "Resources" section and allow Administrators/Moderators/Users to update it with useful links to sources for help or information useful to the targeted audience, like links to statutes, organizations offering support, complaint resources etc.
-
-*Provisional Functionality to be introduced in Phase 6*
-- Add comments to government institutions
-
-*Provisional Functionality to be introduced in Phase 7*
-- Add comments to civil servants
-
-*Provisional Functionality to be introduced in Phase 8*
+*Provisional Functionality to be introduced in Phase 1.5*
 - Add summary metrics and reporting for all entities
-
-*Provisional Functionality to be introduced in Phase 9*
-_GDPR:_
-- Add ability for users to download their private data
-- Add functionality for a user to delete their account
-- Add functionality for an Administrator to delete user accounts
 
 _**Publish of v1**_
 - Add Installation instructions and publish Official Release v1
 
 
 _**Potential Functionality to be Considered for future releases (in no particular order):**_
+
+_Comments:_
+- Create Modular comments section which will eventually be able to be attached to civil servants, government institutions and incidents (and eventually other data entities in future versions), but implement only against incidents in this phase as MVP proof of concept in order to gather feedback and implement improvements.
+- Implement Moderation functionality in the comments section.
+- Allow users from other countries to register, log in and comment only.
+- Add comments to government institutions
+- Add comments to civil servants
+
+_GDPR:_
+- Add ability for users to download their private data
+- Add functionality for a user to delete their account
+- Add functionality for an Administrator to delete user accounts
+
+_Other:_
 - Add system maintenance service application and API functionality as well as [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/) to perform system maintenance, check for spam comments, send notification emails, etc.
 - Create the functionality for users to change their email address.
 - Add functionality to allow for individual or digest email notification to users on comment replies or mentions dependent on user preferences 
@@ -123,4 +121,4 @@ _**Potential Functionality to be Considered for future releases (in no particula
 
 
 ### Last Updated
-30 September 2020 UTC
+20 October 2020 UTC
