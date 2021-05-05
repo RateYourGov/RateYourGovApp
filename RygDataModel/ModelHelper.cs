@@ -1,10 +1,16 @@
-﻿using System;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RygDataModel
 {
+    #region Enums
+    /// <summary>
+    /// The Database Entity to which the data relates.
+    /// </summary>
     public enum DbEntity
     {
         Incident,
@@ -27,12 +33,18 @@ namespace RygDataModel
         IncidentUpdate
     }
 
+    /// <summary>
+    /// The type of the subscription.
+    /// </summary>
     public enum SubsType
     {
         DataEntity,
         Regional
     }
 
+    /// <summary>
+    /// The reason that registration was denied.
+    /// </summary>
     public enum RegistrationDenyReason
     {
         LimitExceeded,
@@ -41,12 +53,18 @@ namespace RygDataModel
         UnderConstruction
     }
 
+    /// <summary>
+    /// The API authentication type to use.
+    /// </summary>
     public enum ApiAuthType
     {
         AuthenticationToken,
         UserPassword
     }
 
+    /// <summary>
+    /// The data input format.
+    /// </summary>
     public enum ReadDataType
     {
         Json,
@@ -54,6 +72,9 @@ namespace RygDataModel
         Text
     }
 
+    /// <summary>
+    /// The type of Blog entity data.
+    /// </summary>
     public enum BlogType
     {
         Blog,
@@ -61,10 +82,13 @@ namespace RygDataModel
         Newsletter
     }
 
+    /// <summary>
+    /// The online service to which the link points.
+    /// </summary>
     public enum LinkType
     {
         YouTube,
-        YouNow, 
+        YouNow,
         NewsArticle,
         Blog,
         ChangeOrg,
@@ -74,6 +98,9 @@ namespace RygDataModel
         Other
     }
 
+    /// <summary>
+    /// The type of the calendar event.
+    /// </summary>
     public enum CalendarEventType
     {
         Meetup,
@@ -86,7 +113,12 @@ namespace RygDataModel
     /// HexString: The hex character string separated by dashes, e.g. "42-2F-51-4F-79-32-50-2F-63...",  
     /// HexStringShort: The shortened hex character string, NOT separated by dashes, e.g. "422F514F7932502F63...",  
     /// Base64: The usual flavor of Base64,  
-    /// Base64url: Base64 with URL/FileName safe characters [+ -> -, / -> _, no padding (=)].  
+    /// Base64url: Base64 with URL/FileName safe characters [+ -> -, / -> _, no padding (=)]. 
+    /// UTF8: The standard Windows encoding type.
+    /// UTF16: Unicode.
+    /// UTF32: UTF32.
+    /// ASCII: The basic old fasioned ASCII character set.
+    /// Unicode: Synonym for UTF16.
     /// </summary>
     /// <see cref="https://en.wikipedia.org/wiki/Base64#Base64_table"/>
     /// <see cref="https://en.wikipedia.org/wiki/Base64#RFC_4648"/>
@@ -95,9 +127,14 @@ namespace RygDataModel
         HexString,
         HexStringShort,
         Base64,
-        Base64url
+        Base64url,
+        UTF8,
+        UTF16,
+        UTF32,
+        ASCII,
+        Unicode
     }
-
+    #endregion
 
     public static class ModelHelper
     {
@@ -109,120 +146,121 @@ namespace RygDataModel
         /// </summary>
         public static string StringDbEntity(DbEntity dbEntityEnum)
         {
-            switch (dbEntityEnum)
+            return dbEntityEnum switch
             {
-                case DbEntity.Incident: return "I";                 //guid
-                case DbEntity.CivilServant: return "E";             //guid
-                case DbEntity.Institution: return "O";              //guid
-                case DbEntity.CalendarEvent: return "C";            //guid
-                case DbEntity.BlogPost: return "B";                 //guid
-                case DbEntity.StateProvinceRegion: return "S";      //int
-                case DbEntity.CountyArea: return "A";               //int
-                case DbEntity.City: return "T";                     //int
-                case DbEntity.CommentInThread: return "N";          //int
-                case DbEntity.Reply: return "R";                    //int
-                case DbEntity.CommentMention: return "M";           //int
-                case DbEntity.OfficialRegister: return "F";         //guid
-                case DbEntity.Alert: return "L";                    //guid
-                case DbEntity.IncidentCategory: return "Y";         //guid
-                case DbEntity.Country: return "U";                  //iso
-                case DbEntity.User: return "Z";                     //guid
-                case DbEntity.OfficialRegisterEntry: return "G";    //guid
-                case DbEntity.IncidentUpdate: return "P";           //guid
-                default: return String.Empty;
-            }
+                DbEntity.Incident => "I",//guid
+                DbEntity.CivilServant => "E",//guid
+                DbEntity.Institution => "O",//guid
+                DbEntity.CalendarEvent => "C",//guid
+                DbEntity.BlogPost => "B",//guid
+                DbEntity.StateProvinceRegion => "S",//int
+                DbEntity.CountyArea => "A",//int
+                DbEntity.City => "T",//int
+                DbEntity.CommentInThread => "N",//int
+                DbEntity.Reply => "R",//int
+                DbEntity.CommentMention => "M",//int
+                DbEntity.OfficialRegister => "F",//guid
+                DbEntity.Alert => "L",//guid
+                DbEntity.IncidentCategory => "Y",//guid
+                DbEntity.Country => "U",//iso
+                DbEntity.User => "Z",//guid
+                DbEntity.OfficialRegisterEntry => "G",//guid
+                DbEntity.IncidentUpdate => "P",//guid
+                _ => String.Empty,
+            };
         }
 
         //(D)ata Entity; (R)egional 
         public static string StringSubsType(SubsType subsTypeEnum)
         {
-            switch (subsTypeEnum)
+            return subsTypeEnum switch
             {
-                case SubsType.DataEntity: return "D";
-                case SubsType.Regional: return "R";
-                default: return String.Empty;
-            }
+                SubsType.DataEntity => "D",
+                SubsType.Regional => "R",
+                _ => String.Empty,
+            };
         }
 
         //(L)imit exceeded; registerby(I)nvitationonly; allowoutof(C)ountryuserregistration; (U)nder construction
         public static string StringRegDenyType(RegistrationDenyReason denyTypeEnum)
         {
-            switch (denyTypeEnum)
+            return denyTypeEnum switch
             {
-                case RegistrationDenyReason.LimitExceeded: return "L";
-                case RegistrationDenyReason.RegisterByInvitationOnly: return "I";
-                case RegistrationDenyReason.AllowOutOfCountryUserRegistration: return "C";
-                case RegistrationDenyReason.UnderConstruction: return "U";
-                default: return String.Empty;
-            }
+                RegistrationDenyReason.LimitExceeded => "L",
+                RegistrationDenyReason.RegisterByInvitationOnly => "I",
+                RegistrationDenyReason.AllowOutOfCountryUserRegistration => "C",
+                RegistrationDenyReason.UnderConstruction => "U",
+                _ => String.Empty,
+            };
         }
 
         //authentication(T)oken; (U)serpassword
         public static string StringApiAuthType(ApiAuthType apiAuthTypeEnum)
         {
-            switch (apiAuthTypeEnum)
+            return apiAuthTypeEnum switch
             {
-                case ApiAuthType.AuthenticationToken: return "T";
-                case ApiAuthType.UserPassword: return "U";
-                default: return String.Empty;
-            }
+                ApiAuthType.AuthenticationToken => "T",
+                ApiAuthType.UserPassword => "U",
+                _ => String.Empty,
+            };
         }
 
         //(J)son; (X)ml; (T)ext
         public static string StringReadDataType(ReadDataType readDataTypeEnum)
         {
-            switch (readDataTypeEnum)
+            return readDataTypeEnum switch
             {
-                case ReadDataType.Json: return "J";
-                case ReadDataType.XML: return "X";
-                case ReadDataType.Text: return "T";
-                default: return String.Empty;
-            }
+                ReadDataType.Json => "J",
+                ReadDataType.XML => "X",
+                ReadDataType.Text => "T",
+                _ => String.Empty,
+            };
         }
 
         //(B)log; (W)ebsite front page article; (N)ewsletter
         public static string StringBlogType(BlogType blogTypeEnum)
         {
-            switch (blogTypeEnum)
+            return blogTypeEnum switch
             {
-                case BlogType.Blog: return "B";
-                case BlogType.WebsiteFrontpageArticle: return "W";
-                case BlogType.Newsletter: return "N";
-                default: return String.Empty;
-            }
+                BlogType.Blog => "B",
+                BlogType.WebsiteFrontpageArticle => "W",
+                BlogType.Newsletter => "N",
+                _ => String.Empty,
+            };
         }
 
         //(Y)outube; yo(U)now; (N)ewsarticle; (B)log; (Ch)ange.org; (A)vaaz.org; (R)eddit; (T)witch; (O)ther  
         public static string StringLinkType(LinkType linkTypeEnum)
         {
-            switch (linkTypeEnum)
+            return linkTypeEnum switch
             {
-                case LinkType.YouTube: return "Y";
-                case LinkType.YouNow: return "U";
-                case LinkType.NewsArticle: return "N";
-                case LinkType.Blog: return "B";
-                case LinkType.ChangeOrg: return "C";
-                case LinkType.AvaazOrg: return "A";
-                case LinkType.Reddit: return "R";
-                case LinkType.Twitch: return "T";
-                case LinkType.Other: return "O";
-                default: return String.Empty;
-            }
+                LinkType.YouTube => "Y",
+                LinkType.YouNow => "U",
+                LinkType.NewsArticle => "N",
+                LinkType.Blog => "B",
+                LinkType.ChangeOrg => "C",
+                LinkType.AvaazOrg => "A",
+                LinkType.Reddit => "R",
+                LinkType.Twitch => "T",
+                LinkType.Other => "O",
+                _ => String.Empty,
+            };
         }
 
         //(M)eetup; (D)emonstration; Online meeting; online (S)tream
         public static string StringCalendarEventType(CalendarEventType calendarEventTypeEnum)
         {
-            switch (calendarEventTypeEnum)
+            return calendarEventTypeEnum switch
             {
-                case CalendarEventType.Meetup: return "M";
-                case CalendarEventType.Demonstration: return "D";
-                case CalendarEventType.OnlineMeeting: return "O";
-                case CalendarEventType.OnlineStream: return "S";
-                default: return String.Empty;
-            }
+                CalendarEventType.Meetup => "M",
+                CalendarEventType.Demonstration => "D",
+                CalendarEventType.OnlineMeeting => "O",
+                CalendarEventType.OnlineStream => "S",
+                _ => String.Empty,
+            };
         }
 
+        #region Data Type Conversion Helpers
         /// <summary>
         /// Convert a byte array to a string in the StringEncodingType format requested.
         /// </summary>
@@ -230,20 +268,23 @@ namespace RygDataModel
         /// <param name="stringOutputType">The StringEncodingType enum format in which to return the string.</param>
         /// <returns>A string encoded in the requested StringEncodingType enum format.</returns>
         public static string ConvertBytesToStringEncodingType(byte[] sourceByteArrayData,
-                                                                  StringEncodingType stringOutputType = StringEncodingType.Base64url)
+                                                              StringEncodingType stringOutputType = StringEncodingType.Base64url)
         {
 
-            switch (stringOutputType)
+            return stringOutputType switch
             {
-                case StringEncodingType.Base64: return Convert.ToBase64String(sourceByteArrayData);
-                case StringEncodingType.Base64url: return Base64UrlTextEncoder.Encode(sourceByteArrayData);
-                case StringEncodingType.HexString: return ConvertByteArrayToHexString(sourceByteArrayData);
-                case StringEncodingType.HexStringShort: return ConvertByteArrayToHexStringShort(sourceByteArrayData);
-                default: return String.Empty;
-            }
-
+                StringEncodingType.Base64 => Convert.ToBase64String(sourceByteArrayData),
+                StringEncodingType.Base64url => Base64UrlTextEncoder.Encode(sourceByteArrayData),
+                StringEncodingType.HexString => ConvertByteArrayToHexString(sourceByteArrayData),
+                StringEncodingType.HexStringShort => ConvertByteArrayToHexStringShort(sourceByteArrayData),
+                StringEncodingType.UTF8 => ConvertByteArrayToUTF8(sourceByteArrayData),
+                StringEncodingType.UTF16 => ConvertByteArrayToUnicode(sourceByteArrayData),
+                StringEncodingType.UTF32 => ConvertByteArrayToUTF32(sourceByteArrayData),
+                StringEncodingType.Unicode => ConvertByteArrayToUnicode(sourceByteArrayData),
+                StringEncodingType.ASCII => ConvertByteArrayToASCII(sourceByteArrayData),
+                _ => String.Empty,
+            };
         }
-
         /// <summary>
         /// Convert a string in the specified StringEncodingType format to a byte array.
         /// </summary>
@@ -251,18 +292,38 @@ namespace RygDataModel
         /// <param name="stringInputType">The StringEncodingType enum format in which the sourceStringData string is encoded.</param>
         /// <returns>The converted byte array.</returns>
         public static byte[] ConvertStringEncodingTypeToBytes(string sourceStringData,
-                                                                  StringEncodingType stringInputType = StringEncodingType.Base64url)
+                                                              StringEncodingType stringInputType = StringEncodingType.Base64url)
         {
 
-            switch (stringInputType)
+            return stringInputType switch
             {
-                case StringEncodingType.Base64: return Convert.FromBase64String(sourceStringData);
-                case StringEncodingType.Base64url: return Base64UrlTextEncoder.Decode(sourceStringData);
-                case StringEncodingType.HexString: return ConvertByteArrayFromHexString(sourceStringData);
-                case StringEncodingType.HexStringShort: return ConvertByteArrayFromHexStringShort(sourceStringData);
-                default: return null;
-            }
-
+                StringEncodingType.Base64 => Convert.FromBase64String(sourceStringData),
+                StringEncodingType.Base64url => Base64UrlTextEncoder.Decode(sourceStringData),
+                StringEncodingType.HexString => ConvertByteArrayFromHexString(sourceStringData),
+                StringEncodingType.HexStringShort => ConvertByteArrayFromHexStringShort(sourceStringData),
+                StringEncodingType.UTF8 => ConvertByteArrayFromUTF8(sourceStringData),
+                StringEncodingType.UTF16 => ConvertByteArrayFromUnicode(sourceStringData),
+                StringEncodingType.UTF32 => ConvertByteArrayFromUTF32(sourceStringData),
+                StringEncodingType.Unicode => ConvertByteArrayFromUnicode(sourceStringData),
+                StringEncodingType.ASCII => ConvertByteArrayFromASCII(sourceStringData),
+                _ => null,
+            };
+        }
+        /// <summary>
+        /// Convert string Encoding type.
+        /// </summary>
+        /// <param name="StringToConvert">String to voncert.</param>
+        /// <param name="ConvertFromType">The StringEncodingType of the StringToConvert parameter string.</param>
+        /// <param name="ConvertToType">The StringEncodingType to convert the StringToConvert parameter string to.</param>
+        /// <returns>
+        /// The converted string in the ConvertToType parameter encoding.
+        /// </returns>
+        public static string ConvertStringEncodingType(string StringToConvert,
+                                                StringEncodingType ConvertFromType,
+                                                StringEncodingType ConvertToType)
+        {
+            byte[] _bytes = ConvertStringEncodingTypeToBytes(StringToConvert, ConvertFromType);
+            return ConvertBytesToStringEncodingType(_bytes, ConvertToType);
         }
 
         /// <summary>
@@ -286,7 +347,6 @@ namespace RygDataModel
             }
 
         }
-
         /// <summary>
         /// Converts hex string to a byte array.
         /// </summary>
@@ -319,11 +379,11 @@ namespace RygDataModel
                     byte[] _returnBytes = new byte[strLen];
                     for (int i = 0; i < strLen; i++)
                     {
-                        if (sourceStringData[i].ToString().Length != 2)
+                        if (_strArray[i].ToString().Length != 2)
                         {
                             throw new ApplicationException($"Hex string value elements must be 2 characters in length.  Invalid value '{sourceStringData[i]}' encountered at array position {i} of string value {sourceStringData} and can not be converted.");
                         }
-                        _returnBytes[i] = Convert.ToByte(sourceStringData[i].ToString(), 16);
+                        _returnBytes[i] = Convert.ToByte(_strArray[i].ToString(), 16);
                     }
                     return _returnBytes;
 
@@ -354,7 +414,6 @@ namespace RygDataModel
             }
 
         }
-
         /// <summary>
         /// Converts short hex string to a byte array.
         /// </summary>
@@ -362,7 +421,6 @@ namespace RygDataModel
         /// <returns>The converted byte array</returns>
         public static byte[] ConvertByteArrayFromHexStringShort(string sourceStringData)
         {
-
             if ((sourceStringData == null) || (sourceStringData?.Length == 0) || (sourceStringData?.Length % 2 > 0))
             {
                 if ((sourceStringData?.Length > 0) && (sourceStringData?.Length % 2 > 0))
@@ -373,7 +431,6 @@ namespace RygDataModel
             }
             else
             {
-
                 int byteCount = sourceStringData.Length / 2;
                 byte[] _returnBytes = new byte[byteCount];
                 for (int i = 0; i < byteCount; i++)
@@ -381,11 +438,157 @@ namespace RygDataModel
                     _returnBytes[i] = Convert.ToByte(sourceStringData.Substring(i * 2, 2), 16);
                 }
                 return _returnBytes;
+            }
+        }
 
+        /// <summary>
+        /// Converts a byte array to it's UTF8 string representation.
+        /// </summary>
+        /// <param name="sourceByteArrayData">The byte array to convert.</param>
+        /// <returns>The UTF8 Encoded string.
+        public static string ConvertByteArrayToUTF8(byte[] sourceByteArrayData)
+        {
+
+            if ((sourceByteArrayData == null) || (sourceByteArrayData?.Length == 0))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return Encoding.UTF8.GetString(sourceByteArrayData);
+            }
+
+        }
+        /// <summary>
+        /// Converts a UTF8 string to a byte array.
+        /// </summary>
+        /// <param name="sourceStringData">The StringEncodingType.UTF8 value to convert to bytes.</param>
+        /// <returns>The converted byte array</returns>
+        public static byte[] ConvertByteArrayFromUTF8(string sourceStringData)
+        {
+
+            if ((sourceStringData == null) || (sourceStringData?.Length == 0))
+            {
+                return null;
+            }
+            else
+            {
+                return Encoding.UTF8.GetBytes(sourceStringData);
             }
 
         }
 
-    }
+        /// <summary>
+        /// Converts a byte array to it's UTF32 string representation.
+        /// </summary>
+        /// <param name="sourceByteArrayData">The byte array to convert.</param>
+        /// <returns>The UTF32 Encoded string.
+        public static string ConvertByteArrayToUTF32(byte[] sourceByteArrayData)
+        {
 
+            if ((sourceByteArrayData == null) || (sourceByteArrayData?.Length == 0))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return Encoding.UTF32.GetString(sourceByteArrayData);
+            }
+
+        }
+        /// <summary>
+        /// Converts an UTF32 string to a byte array.
+        /// </summary>
+        /// <param name="sourceStringData">The StringEncodingType.UTF32 value to convert to bytes.</param>
+        /// <returns>The converted byte array</returns>
+        public static byte[] ConvertByteArrayFromUTF32(string sourceStringData)
+        {
+
+            if ((sourceStringData == null) || (sourceStringData?.Length == 0))
+            {
+                return null;
+            }
+            else
+            {
+                return Encoding.UTF32.GetBytes(sourceStringData);
+            }
+
+        }
+
+        /// <summary>
+        /// Converts a byte array to it's Unicode (UTF16) string representation.
+        /// </summary>
+        /// <param name="sourceByteArrayData">The byte array to convert.</param>
+        /// <returns>The Unicode (UTF16) Encoded string.
+        public static string ConvertByteArrayToUnicode(byte[] sourceByteArrayData)
+        {
+
+            if ((sourceByteArrayData == null) || (sourceByteArrayData?.Length == 0))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return Encoding.Unicode.GetString(sourceByteArrayData);
+            }
+
+        }
+        /// <summary>
+        /// Converts a Unicode (UTF16) string to a byte array.
+        /// </summary>
+        /// <param name="sourceStringData">The StringEncodingType.Unicode value to convert to bytes.</param>
+        /// <returns>The converted byte array</returns>
+        public static byte[] ConvertByteArrayFromUnicode(string sourceStringData)
+        {
+
+            if ((sourceStringData == null) || (sourceStringData?.Length == 0))
+            {
+                return null;
+            }
+            else
+            {
+                return Encoding.Unicode.GetBytes(sourceStringData);
+            }
+
+        }
+
+        /// <summary>
+        /// Converts a byte array to it's ASCII string representation.
+        /// </summary>
+        /// <param name="sourceByteArrayData">The byte array to convert.</param>
+        /// <returns>The UTF8 Encoded string.
+        public static string ConvertByteArrayToASCII(byte[] sourceByteArrayData)
+        {
+
+            if ((sourceByteArrayData == null) || (sourceByteArrayData?.Length == 0))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return Encoding.ASCII.GetString(sourceByteArrayData);
+            }
+
+        }
+        /// <summary>
+        /// Converts an ASCII string to a byte array.
+        /// </summary>
+        /// <param name="sourceStringData">The StringEncodingType.ASCII value to convert to bytes.</param>
+        /// <returns>The converted byte array</returns>
+        public static byte[] ConvertByteArrayFromASCII(string sourceStringData)
+        {
+
+            if ((sourceStringData == null) || (sourceStringData?.Length == 0))
+            {
+                return null;
+            }
+            else
+            {
+                return Encoding.ASCII.GetBytes(sourceStringData);
+            }
+
+        }
+        #endregion
+
+    }
 }

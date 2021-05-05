@@ -15,6 +15,7 @@ namespace RygDataModel.Models
     {
 
         public string Id { get; set; }
+
         public string EncryptedEmailAddress { get; set; }
         public string EncryptedCountryIsoCode { get; set; }
 
@@ -26,16 +27,16 @@ namespace RygDataModel.Models
         /// </example>
         public string RegistrationDeniedReason { get; set; }
 
-        public DateTime RequestDate { get; set; }
+        public DateTime RequestDate { get; set; }                   //UTC
 
-        public string ConfirmationToken { get; set; }
-        public bool ConfirmationEmailSent { get; set; }
-        public DateTime ConfirmationEmailSentDate { get; set; }
-        public DateTime ConfirmedEmailDate { get; set; }            //null=not confirmed
+        public string ConfirmationToken { get; set; }               //null=not required
+        public bool ConfirmationEmailSent { get; set; }             //null=not sent; 0=not required; 1=sent
+        public DateTime ConfirmationEmailSentDate { get; set; }     //UTC, null=not sent
+        public DateTime ConfirmedEmailDate { get; set; }            //UTC, null=not confirmed
 
-        public bool AvailableEmailSent { get; set; }
-        public DateTime AvailableEmailSentDate { get; set; }
-        public DateTime UserRegisteredDate { get; set; }            //null=not registered
+        public bool AvailableEmailSent { get; set; }                //null=not sent; 0=not required; 1=sent
+        public DateTime AvailableEmailSentDate { get; set; }        //UTC, null=not sent
+        public DateTime UserRegisteredDate { get; set; }            //UTC, null=not registered
 
     }
 }

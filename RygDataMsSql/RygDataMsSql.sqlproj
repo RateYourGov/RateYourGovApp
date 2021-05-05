@@ -58,14 +58,14 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo" />
-    <Folder Include="dbo\Tables" />
-    <Folder Include="dbo\Views" />
-    <Folder Include="dbo\StoredProcedures" />
+    <Folder Include="ryg" />
+    <Folder Include="ryg\Tables" />
+    <Folder Include="ryg\Views" />
+    <Folder Include="ryg\StoredProcedures" />
     <Folder Include="PublishLocations" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\UserPendRegAvailable.sql" />
-    <Build Include="dbo\ryg.sql" />
+    <Build Include="ryg\Tables\UserPendRegAvailable.sql" />
+    <Build Include="ryg\ryg.sql" />
   </ItemGroup>
 </Project>
