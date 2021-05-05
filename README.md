@@ -1,5 +1,8 @@
 # Rate Your Government Website Application
-Website Application that allows for **documenting** and rating _unlawful_ or _heroic_ encounters with Government Institutions and Civil Servants in order to create a publically accesible, searchable register.
+[![.net](https://img.shields.io/static/v1?label=.net&message=5&color=blue)](#)
+[![database](https://img.shields.io/static/v1?label=database&message=Microsoft%20SQL%202019&color=c94f60)](#)
+
+<img src="https://github.com/RateYourGov/RateYourGovApp/blob/main/Shared/Images/RygLogo_56x48.png" /> Website Application that allows for **documenting** and rating _unlawful_ or _heroic_ encounters with Government Institutions and Civil Servants in order to create a publically accesible, searchable register.
 
 ### Application Use Case
 The guiding principle behind the application is that government, it's institutions and employees _(in their professional capacity)_ should be accountable to the citizens of their country.
@@ -30,8 +33,6 @@ _Having access to quantitative and specific information would, at the very least
 - Depriving _any individual_ of their legal or human rights.  
 
 In order to discourage this, the application is designed to focus on **behavior** (interactions - incidents), which also encourages objectivity by allowing the consumer of the information to form their own opinions based on facts presented.  
-
-In a nutshell, in the words of _Mahatma Gandhi_, **"Be the change you wish to see in the world"**.
 
 ### Application Functionality
 **_Note that the application is currently in the Development Phase_**
@@ -121,4 +122,4 @@ _Other:_
 
 
 ### Last Updated
-20 October 2020 UTC
+05 May 2021 UTC
