@@ -66,102 +66,104 @@ namespace RygDataModel
         /// Returns the data in the Class Property fields.  
         /// NB: When writing to the Database, use the StringEncodingType.Base64url string format as a standard. 
         /// </remarks>
-        /// <param name="dataToEncrypt">The string to encrypt in UTF8 format.</param>
-        /// <param name="dataSecretKeyValue">The securely stored key to be seeded and used to perform the encryption in UTF8 format.  NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 if it is stored in another format in your secured configuration.</param>
-        /// <param name="useInitializationVectorValue">The StringEncodingType.Base64url formatted string cipher IV value to reuse only if desired.  Leave blank for the value to be calculated when adding new data.</param>
-        /// <param name="dataKeySaltValue">A Salt value to be added to the key itself to perform the encryption.  Added as an extra layer of security so that merely having access to the securely stored settings alone would not be enough to decrypt the data.</param>
-        /// <param name="dataKeyExtraSaltValue">An Additional Salt value to be added to the key itself to perform the encryption.  Added as an extra layer of security so that merely having access to the securely stored settings alone would not be enough to decrypt the data.</param>
-        /// <param name="outputEncodingType">The string format in which to return the encrypted data.  Note that the standard to be used when writing to the Database is StringEncodingType.Base64url as it is most compatible with the majority of DB engines and is both URL and File Name safe.</param>
+        /// <param name="dataToEncrypt">
+        /// The string to encrypt in UTF8 format.
+        /// </param>
+        /// <param name="dataSecretKeyValue">
+        /// The securely stored key to be seeded and used to perform the encryption in UTF8 format.  
+        /// NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 if it is stored 
+        /// in another format in your secured configuration.
+        /// </param>
+        /// <param name="dataKeySaltValue">A Salt value to be added to the key itself to perform the encryption.  
+        /// Added as an extra layer of security so that merely having access to the securely stored settings alone 
+        /// would not be enough to decrypt the data.
+        /// </param>
+        /// <param name="dataKeyExtraSaltValue">An Additional Salt value to be added to the key itself to perform the encryption.  
+        /// Added as an extra layer of security so that merely having access to the securely stored settings alone would 
+        /// not be enough to decrypt the data.
+        /// </param>
+        /// <param name="outputEncodingType">
+        /// The string format in which to return the encrypted data.  
+        /// Note that the standard to be used when writing to the Database is StringEncodingType.Base64url 
+        /// as it is most compatible with the majority of DB engines and is both URL and File Name safe.
+        /// </param>
         public void EncryptData(string dataToEncrypt,
                                 string dataSecretKeyValue = "",
-                                string useInitializationVectorValue = "",
                                 string dataKeySaltValue = "",
                                 string dataKeyExtraSaltValue = "",
                                 StringEncodingType outputEncodingType = StringEncodingType.Base64url)
         {
-            StringBuilder _dFiller = new(@"95qG~U6lRy_x6y0R-82GjK§jYghL-Gbsbj°mUcgq@BSu8G,Brguw#xTM2--DBAHr©lNDmd©nBVkVØ8QeoT@giNqA~Y69-9°CEIAUØcPpwa±Z5OEG@HSB6ZßqqYASØVoEug,gmlfY²JIyra»Ghpuc§85WV3©r8gnK+BfXVa°zZ4Jf*byTDSßQxdIQ°4LBHV,XFuWEßmKhmR°k8kPB²6gnwq+fuSu3±OMosFĘTE5WeØrd_g9#72WZwØXpjCC»CqZND±QpFwl~wYq-o*b2HDR^yxSoB±70X2_,oEA2U+m1wh4_CY52T~LNdHY»ofzAQ+X7scC~NHFrf,HmXMv©vXw-y@Cwfkw,nuEkV#QcslI©3N-nl~vTtAm²AXd67~Fz4do^uAmBz»n-SSV^g-83hØ1HMuN@Y73wO,G0qKo@jbQ0C*lLFxbØVGKc3°l3BSr@5nGrA@CYPF5ĘJKxC-@ZUirp^X7r5r_AQFqp^txqiV+RcgqX,MIwMO~i14AA_m1usJ-yxw");
-            StringBuilder _hFiller = new(@"symJ6#YyYXPSà5lWk5F©oOrYwgßI7mIh7ßgaBY_o©bp2DNC©GaQq64°Px8Uml*t5y8AiĘ00X_ml@QgxfRK±hSEi5m.l-wW1U©ZWTMQRĘ6wgXWr°2q7fruĘjDeCEQ²8bg8Kg-g3vh-y~De9C41àHUwHjW*gybL5-éIh57wc,iObr6MĘCVErw7ØCTaCygĘ2iPOVW_SgROIr°vMg1ufà4pkqpAØ03ov1W^jk0Lff°wSMxiT_hQD5lw,PdGfFy.bb90gAĘFockKI§DF-4ab-KmVzGO°QOAZuq_xgF7jQ°d2ylly#HRb2DF+Aqnz-1»qVoheG§ODnFed+tObegv.1RWSJK#kzqsWy±SryAtyß_RA6cC+qV1CjJ§JVltK1ØcJ49OMàgWHojK©yhfCgT°NVCrFS@Nj4yAMĘNO6VVE@sPrFh-©JneoBW@dmwLF0#Nomzdv.399829éaloiks^wd0VTM»3AYUuwØxkxUGz@roQOw6_nUqVdn°pAz8bW©o02V4eàk2");
-
-            //Generate the *actual* Encryption Key that will be used using a hashed value of the obfuscated password to ensure 256 bit key length
-            //1. Create the Key value to be hashed
-            //Stringbuilder for performance 
-            StringBuilder _sbDataKey = new(dataSecretKeyValue);
-            _sbDataKey.Append(dataKeySaltValue);
-            //add hardcoded salt for an extra layer of abstraction/obfuscation security
-            //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
-            _sbDataKey.Append(@"aZb_|@#é*.dD");
-            _sbDataKey.Append((char)87);
-            _sbDataKey.Append((char)37);
-            _sbDataKey.Append((char)44);
-            _sbDataKey.Append('5');
-            _sbDataKey.Append((char)115);
-            _sbDataKey.Append((char)59);
-            _sbDataKey.Append('^');
-            _sbDataKey.Append((char)101);
-            _sbDataKey.Append((char)125);
-            _sbDataKey.Append((char)77);
-            _sbDataKey.Append((char)83);
-            _sbDataKey.Append('_');
-            _sbDataKey.Append((char)57);
-            _sbDataKey.Append((char)106);
-            _sbDataKey.Append('@');
-            _sbDataKey.Append((char)45);
-            _sbDataKey.Append((char)66);
-            _sbDataKey.Append(dataKeyExtraSaltValue);
-            _sbDataKey.Append(_dFiller.ToString().Substring(72, 128));
-            _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-
-            //2. Create the Key value to be used by the hashing function 
-            //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
-            StringBuilder _sbHashKey = new(@"&&~§y_xO^..*-+=");
-            _sbHashKey.Append((char)118);
-            _sbHashKey.Append((char)62);
-            _sbHashKey.Append((char)69);
-            _sbHashKey.Append('-');
-            _sbHashKey.Append((char)55);
-            _sbHashKey.Append((char)47);
-            _sbHashKey.Append('%');
-            _sbHashKey.Append((char)78);
-            _sbHashKey.Append((char)49);
-            _sbHashKey.Append((char)70);
-            _sbHashKey.Append('²');
-            _sbHashKey.Append((char)99);
-            _sbHashKey.Append((char)101);
-            _sbHashKey.Append((char)87);
-            _sbHashKey.Append('|');
-            _sbHashKey.Append((char)111);
-            _sbHashKey.Append((char)91);
-            _sbHashKey.Append(dataSecretKeyValue);
-            _sbHashKey.Append(_hFiller.ToString().Substring(128, 128));
-            _hFiller.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-
-            //Hash the result to create a tamper proof 256bit value using a 128 byte key for efficiency to avoid SHA-256 hashing to derive the correct key length
-            HashAlgorithm _hashService = new HMACSHA256(Encoding.UTF8.GetBytes(_sbHashKey.ToString().Substring(2, 128)));
-            _sbHashKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-            byte[] _hashResult = _hashService.ComputeHash(Encoding.UTF8.GetBytes(_sbDataKey.ToString()));
-            _sbDataKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-
-            //Create the AES Encryption Cipher 
-            Aes _cryptCipher = Aes.Create();
-            _cryptCipher.Mode = CipherMode.CBC;
-            _cryptCipher.KeySize = 256;
-            _cryptCipher.Padding = PaddingMode.ISO10126;
-            _cryptCipher.Key = _hashResult;
-            if (useInitializationVectorValue?.Length > 0)
+            //require at least one of the following
+            if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyExtraSaltValue.Trim().Length) < 1)
             {
-                _cryptCipher.IV = ConvertStringEncodingTypeToBytes(useInitializationVectorValue, StringEncodingType.Base64url);
+                throw new Exception("No Secret Key or Salt Values supplied for encryption.");
             }
 
-            //Create the encryptor, convert source data to bytes, and encrypt
-            ICryptoTransform _cryptService = _cryptCipher.CreateEncryptor();
-            byte[] _bytesToEncrypt = Encoding.UTF8.GetBytes(dataToEncrypt);
-            byte[] _encryptedBytes = _cryptService.TransformFinalBlock(_bytesToEncrypt, 0, _bytesToEncrypt.Length);
+            //If there is no data to encrypt, don't encrypt it
+            if (dataToEncrypt.Length > 0)
+            {
+                //Calculate the weights to apply to the various keys and salts
+                double _keysLen = dataSecretKeyValue.Length + dataKeySaltValue.Length + dataKeyExtraSaltValue.Length;
+                double _keyLen = Math.Floor((dataSecretKeyValue.Length / _keysLen) * 24D);
+                double _saltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
+                double _extraSaltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
 
-            //Populate Class Properties with Encrypted results
-            DecryptedValue = dataToEncrypt;
-            EncryptedValue = ConvertBytesToStringEncodingType(_encryptedBytes, outputEncodingType);
-            EncryptedInitializationVector = ConvertBytesToStringEncodingType(_cryptCipher.IV, StringEncodingType.Base64url);
-            EncryptedValueEncodingType = outputEncodingType;
+                //Generate the Encryption Key that will use the obfuscated key ensuring a 256 bit/64 byte/32 char key length.
+                StringBuilder _dFiller = new(@"*TFTzsSoU7dYDqHf8T#pOrPw9TL7rrm*I_éàT<à@wcfl-1i#y9v7*à@1à6bb3711-éé3*20a5-é446=7à-b4*8c-f2a577_ac=b4''''cbmg<I9*à0éVWgnX-xyéfuàc*DV1jQY_XQO=éséLqA2S8ER*wgPGE4_b3àc=cd2a-abé5éeé-4488-96d6-6*ccè2=bc49fà6é43JSfè2W-zfPé=Yp9Vàhgé4*_UOsce10ENK=OWrzAQNRymI-*WObzPwfETAhgw");
+                //Stringbuilder for performance
+
+                StringBuilder _sbDataKey = new();
+                if ((int)_keyLen > 0)
+                {
+                    _sbDataKey.Append(TrimOrPadText(dataSecretKeyValue, (int)_keyLen, 0, true));
+                }
+                //add hardcoded salt for an extra layer of abstraction/obfuscation security
+                //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
+                _sbDataKey.Append('>');
+                _sbDataKey.Append((char)87);
+                if ((int)_saltLen > 0)
+                {
+                    _sbDataKey.Append(TrimOrPadText(dataKeySaltValue, (int)_saltLen, 0, false, false, true));
+                }
+                _sbDataKey.Append((char)106);
+                _sbDataKey.Append((char)57);
+                _sbDataKey.Append(_dFiller.ToString().Substring(231, 31));
+                if ((int)_extraSaltLen > 0)
+                {
+                    _sbDataKey.Insert(11, TrimOrPadText(dataKeyExtraSaltValue, (int)_extraSaltLen, 0, true));
+                }
+                _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+
+                byte[] _useKey = Encoding.UTF8.GetBytes(_sbDataKey.ToString().Substring(3, 31));
+                _sbDataKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+
+                //Create the AES Encryption Cipher 
+                Aes _cryptCipher = Aes.Create();
+                _cryptCipher.Mode = CipherMode.CBC;
+                _cryptCipher.KeySize = 256;
+                _cryptCipher.Padding = PaddingMode.ISO10126;
+                _cryptCipher.Key = _useKey;
+                _cryptCipher.BlockSize = 128;
+
+                //Create the encryptor, convert source data to bytes, and encrypt
+                ICryptoTransform _cryptService = _cryptCipher.CreateEncryptor();
+                byte[] _bytesToEncrypt = Encoding.UTF8.GetBytes(dataToEncrypt);
+                byte[] _encryptedBytes = _cryptService.TransformFinalBlock(_bytesToEncrypt, 0, _bytesToEncrypt.Length);
+
+                //Populate Class Properties with Encrypted results
+                DecryptedValue = dataToEncrypt;
+                EncryptedValue = ConvertBytesToStringEncodingType(_encryptedBytes, outputEncodingType);
+                EncryptedInitializationVector = ConvertBytesToStringEncodingType(_cryptCipher.IV, StringEncodingType.Base64url);
+                EncryptedValueEncodingType = outputEncodingType;
+            }
+            else
+            {
+                //Populate Class Properties with defaults
+                DecryptedValue = "";
+                EncryptedValue = "";
+                EncryptedInitializationVector = "";
+                EncryptedValueEncodingType = outputEncodingType;
+            }
         }
 
         /// <summary>
@@ -171,12 +173,32 @@ namespace RygDataModel
         /// Returns the data in the Class Property fields.  
         /// NB: When reading from the Database, use the StringEncodingType.Base64url string format as a standard. 
         /// </remarks>
-        /// <param name="dataToDecrypt">The string to Decrypt in UTF8 format.</param>
-        /// <param name="dataSecretKeyValue">The securely stored key to be seeded and used to perform the Decryption in UTF8 format.  NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 if it is stored in another format in your secured configuration.</param>
-        /// <param name="useInitializationVectorValue">The StringEncodingType.Base64url formatted string cipher IV value to use to Decrypt the data.  Leave blank for the value to be calculated if the encrypted data contains the IV, typically the case when using encrypted values read from the Database.</param>
-        /// <param name="dataKeySaltValue">The Salt value to be added to the key itself to perform the Decryption.  NB: This must match the value originally used when encrypting the data.</param>
-        /// <param name="dataKeyExtraSaltValue">The Additional Salt value to be added to the key itself to perform the Decryption.  NB: This must match the value originally used when encrypting the data.</param>
-        /// <param name="encryptedDataEncodingType">The string format of the Encrypted data.  Note that the standard to be used when reading/writing from/to the Database is StringEncodingType.Base64url as it is most compatible with the majority of DB engines and is both URL and File Name safe.</param>
+        /// <param name="dataToDecrypt">
+        /// The string to Decrypt in UTF8 format.
+        /// </param>
+        /// <param name="dataSecretKeyValue">
+        /// The securely stored key to be seeded and used to perform the Decryption in UTF8 format.  
+        /// NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 
+        /// if it is stored in another format in your secured configuration.
+        /// </param>
+        /// <param name="useInitializationVectorValue">
+        /// The StringEncodingType.Base64url formatted string cipher IV value to use to Decrypt the data.  
+        /// Leave blank for the value to be calculated if the encrypted data contains the IV, 
+        /// typically the case when using encrypted values read from the Database.
+        /// </param>
+        /// <param name="dataKeySaltValue">
+        /// The Salt value to be added to the key itself to perform the Decryption.  
+        /// NB: This must match the value originally used when encrypting the data.
+        /// </param>
+        /// <param name="dataKeyExtraSaltValue">
+        /// The Additional Salt value to be added to the key itself to perform the Decryption.  
+        /// NB: This must match the value originally used when encrypting the data.
+        /// </param>
+        /// <param name="encryptedDataEncodingType">
+        /// The string format of the Encrypted data.  
+        /// Note that the standard to be used when reading/writing from/to the Database is StringEncodingType.Base64url 
+        /// as it is most compatible with the majority of DB engines and is both URL and File Name safe.
+        /// </param>
         public void DecryptData(string dataToDecrypt,
                                 string dataSecretKeyValue = "",
                                 string useInitializationVectorValue = "",
@@ -184,6 +206,11 @@ namespace RygDataModel
                                 string dataKeyExtraSaltValue = "",
                                 StringEncodingType encryptedDataEncodingType = StringEncodingType.Base64url)
         {
+            //require at least one of the following
+            if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyExtraSaltValue.Trim().Length) < 1)
+            {
+                throw new Exception("No Secret Key or Salt Values supplied for decryption.");
+            }
 
             //Validate that we have an IV to perform the decryption
             if (useInitializationVectorValue?.ToString().Length == 0)
@@ -209,87 +236,73 @@ namespace RygDataModel
                     throw new ApplicationException("Cipher Initialization Vector Value was supplied, but a different Initialization Vector was also found in the data to decrypt.  Decryption of data not possible.");
                 }
             }
-            StringBuilder _dFiller = new(@"95qG~U6lRy_x6y0R-82GjK§jYghL-Gbsbj°mUcgq@BSu8G,Brguw#xTM2--DBAHr©lNDmd©nBVkVØ8QeoT@giNqA~Y69-9°CEIAUØcPpwa±Z5OEG@HSB6ZßqqYASØVoEug,gmlfY²JIyra»Ghpuc§85WV3©r8gnK+BfXVa°zZ4Jf*byTDSßQxdIQ°4LBHV,XFuWEßmKhmR°k8kPB²6gnwq+fuSu3±OMosFĘTE5WeØrd_g9#72WZwØXpjCC»CqZND±QpFwl~wYq-o*b2HDR^yxSoB±70X2_,oEA2U+m1wh4_CY52T~LNdHY»ofzAQ+X7scC~NHFrf,HmXMv©vXw-y@Cwfkw,nuEkV#QcslI©3N-nl~vTtAm²AXd67~Fz4do^uAmBz»n-SSV^g-83hØ1HMuN@Y73wO,G0qKo@jbQ0C*lLFxbØVGKc3°l3BSr@5nGrA@CYPF5ĘJKxC-@ZUirp^X7r5r_AQFqp^txqiV+RcgqX,MIwMO~i14AA_m1usJ-yxw");
-            StringBuilder _hFiller = new(@"symJ6#YyYXPSà5lWk5F©oOrYwgßI7mIh7ßgaBY_o©bp2DNC©GaQq64°Px8Uml*t5y8AiĘ00X_ml@QgxfRK±hSEi5m.l-wW1U©ZWTMQRĘ6wgXWr°2q7fruĘjDeCEQ²8bg8Kg-g3vh-y~De9C41àHUwHjW*gybL5-éIh57wc,iObr6MĘCVErw7ØCTaCygĘ2iPOVW_SgROIr°vMg1ufà4pkqpAØ03ov1W^jk0Lff°wSMxiT_hQD5lw,PdGfFy.bb90gAĘFockKI§DF-4ab-KmVzGO°QOAZuq_xgF7jQ°d2ylly#HRb2DF+Aqnz-1»qVoheG§ODnFed+tObegv.1RWSJK#kzqsWy±SryAtyß_RA6cC+qV1CjJ§JVltK1ØcJ49OMàgWHojK©yhfCgT°NVCrFS@Nj4yAMĘNO6VVE@sPrFh-©JneoBW@dmwLF0#Nomzdv.399829éaloiks^wd0VTM»3AYUuwØxkxUGz@roQOw6_nUqVdn°pAz8bW©o02V4eàk2");
 
-            //Generate the *actual* Decryption Key that will be used using a hashed value of the obfuscated password to ensure 256 bit key length
-            //1. Create the Key value to be hashed
-            //Stringbuilder for performance 
-            StringBuilder _sbDataKey = new(dataSecretKeyValue);
-            _sbDataKey.Append(dataKeySaltValue);
-            //add hardcoded salt for an extra layer of abstraction/obfuscation security
-            //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
-            _sbDataKey.Append(@"aZb_|@#é*.dD");
-            _sbDataKey.Append((char)87);
-            _sbDataKey.Append((char)37);
-            _sbDataKey.Append((char)44);
-            _sbDataKey.Append('5');
-            _sbDataKey.Append((char)115);
-            _sbDataKey.Append((char)59);
-            _sbDataKey.Append('^');
-            _sbDataKey.Append((char)101);
-            _sbDataKey.Append((char)125);
-            _sbDataKey.Append((char)77);
-            _sbDataKey.Append((char)83);
-            _sbDataKey.Append('_');
-            _sbDataKey.Append((char)57);
-            _sbDataKey.Append((char)106);
-            _sbDataKey.Append('@');
-            _sbDataKey.Append((char)45);
-            _sbDataKey.Append((char)66);
-            _sbDataKey.Append(dataKeyExtraSaltValue);
-            _sbDataKey.Append(_dFiller.ToString().Substring(72, 128));
-            _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+            //if there is no date to decrypt, don't decrypt it
+            if (dataToDecrypt.Length > 0)
+            {
+                //Calculate the weights to apply to the various keys and salts
+                double _keysLen = dataSecretKeyValue.Length + dataKeySaltValue.Length + dataKeyExtraSaltValue.Length;
+                double _keyLen = Math.Floor((dataSecretKeyValue.Length / _keysLen) * 24D);
+                double _saltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
+                double _extraSaltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
 
-            //2. Create the Key value to be used by the hashing function 
-            //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
-            StringBuilder _sbHashKey = new(@"&&~§y_xO^..*-+=");
-            _sbHashKey.Append((char)118);
-            _sbHashKey.Append((char)62);
-            _sbHashKey.Append((char)69);
-            _sbHashKey.Append('-');
-            _sbHashKey.Append((char)55);
-            _sbHashKey.Append((char)47);
-            _sbHashKey.Append('%');
-            _sbHashKey.Append((char)78);
-            _sbHashKey.Append((char)49);
-            _sbHashKey.Append((char)70);
-            _sbHashKey.Append('²');
-            _sbHashKey.Append((char)99);
-            _sbHashKey.Append((char)101);
-            _sbHashKey.Append((char)87);
-            _sbHashKey.Append('|');
-            _sbHashKey.Append((char)111);
-            _sbHashKey.Append((char)91);
-            _sbHashKey.Append(dataSecretKeyValue);
-            _sbHashKey.Append(_hFiller.ToString().Substring(128, 128));
-            _hFiller.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+                //Generate the Encryption Key that will use the obfuscated key ensuring a 256 bit/64 byte/32 char key length.
+                StringBuilder _dFiller = new(@"*TFTzsSoU7dYDqHf8T#pOrPw9TL7rrm*I_éàT<à@wcfl-1i#y9v7*à@1à6bb3711-éé3*20a5-é446=7à-b4*8c-f2a577_ac=b4''''cbmg<I9*à0éVWgnX-xyéfuàc*DV1jQY_XQO=éséLqA2S8ER*wgPGE4_b3àc=cd2a-abé5éeé-4488-96d6-6*ccè2=bc49fà6é43JSfè2W-zfPé=Yp9Vàhgé4*_UOsce10ENK=OWrzAQNRymI-*WObzPwfETAhgw");
+                //Stringbuilder for performance
 
-            //Hash the result to create a tamper proof 256 bit value using a 128 byte key for efficiency to avoid SHA-256 hashing to derive the correct key length
-            HashAlgorithm _hashService = new HMACSHA256(Encoding.UTF8.GetBytes(_sbHashKey.ToString().Substring(2, 128)));
-            _sbHashKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-            byte[] _hashResult = _hashService.ComputeHash(Encoding.UTF8.GetBytes(_sbDataKey.ToString()));
-            _sbDataKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+                StringBuilder _sbDataKey = new();
+                if ((int)_keyLen > 0)
+                {
+                    _sbDataKey.Append(TrimOrPadText(dataSecretKeyValue, (int)_keyLen, 0, true));
+                }
+                //add hardcoded salt for an extra layer of abstraction/obfuscation security
+                //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
+                _sbDataKey.Append('>');
+                _sbDataKey.Append((char)87);
+                if ((int)_saltLen > 0)
+                {
+                    _sbDataKey.Append(TrimOrPadText(dataKeySaltValue, (int)_saltLen, 0, false, false, true));
+                }
+                _sbDataKey.Append((char)106);
+                _sbDataKey.Append((char)57);
+                _sbDataKey.Append(_dFiller.ToString().Substring(231, 31));
+                if ((int)_extraSaltLen > 0)
+                {
+                    _sbDataKey.Insert(11, TrimOrPadText(dataKeyExtraSaltValue, (int)_extraSaltLen, 0, true));
+                }
+                _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
-            //Create the AES Decryption Cipher 
-            Aes _cryptCipher = Aes.Create();
-            _cryptCipher.Mode = CipherMode.CBC;
-            _cryptCipher.KeySize = 256;
-            _cryptCipher.Padding = PaddingMode.ISO10126;
-            _cryptCipher.Key = _hashResult;
-            _cryptCipher.IV = ConvertStringEncodingTypeToBytes(useInitializationVectorValue, StringEncodingType.Base64url);
+                byte[] _useKey = Encoding.UTF8.GetBytes(_sbDataKey.ToString().Substring(3, 31));
+                _sbDataKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
-            //Create the Decryptor, convert source data to bytes, and Decrypt
-            ICryptoTransform _cryptService = _cryptCipher.CreateDecryptor();
-            byte[] _bytesToDecrypt = ConvertStringEncodingTypeToBytes(dataToDecrypt, encryptedDataEncodingType);  //Encoding.UTF8.GetBytes(dataToDecrypt);
-            byte[] _decryptedBytes = _cryptService.TransformFinalBlock(_bytesToDecrypt, 0, _bytesToDecrypt.Length);
+                //Create the AES Decryption Cipher 
+                Aes _cryptCipher = Aes.Create();
+                _cryptCipher.Mode = CipherMode.CBC;
+                _cryptCipher.KeySize = 256;
+                _cryptCipher.Padding = PaddingMode.ISO10126;
+                _cryptCipher.Key = _useKey;
+                _cryptCipher.BlockSize = 128;
+                _cryptCipher.IV = ConvertStringEncodingTypeToBytes(useInitializationVectorValue, StringEncodingType.Base64url);
 
-            //Populate Class Properties with Decrypted results
-            DecryptedValue = ConvertBytesToStringEncodingType(_decryptedBytes, StringEncodingType.UTF8);
-            EncryptedValue = dataToDecrypt;
-            EncryptedInitializationVector = ConvertBytesToStringEncodingType(_cryptCipher.IV, StringEncodingType.Base64url);
-            EncryptedValueEncodingType = encryptedDataEncodingType;
+                //Create the Decryptor, convert source data to bytes, and Decrypt
+                ICryptoTransform _cryptService = _cryptCipher.CreateDecryptor();
+                byte[] _bytesToDecrypt = ConvertStringEncodingTypeToBytes(dataToDecrypt, encryptedDataEncodingType);  //Encoding.UTF8.GetBytes(dataToDecrypt);
+                byte[] _decryptedBytes = _cryptService.TransformFinalBlock(_bytesToDecrypt, 0, _bytesToDecrypt.Length);
 
+                //Populate Class Properties with Decrypted results
+                DecryptedValue = ConvertBytesToStringEncodingType(_decryptedBytes, StringEncodingType.UTF8);
+                EncryptedValue = dataToDecrypt;
+                EncryptedInitializationVector = ConvertBytesToStringEncodingType(_cryptCipher.IV, StringEncodingType.Base64url);
+                EncryptedValueEncodingType = encryptedDataEncodingType;
+            }
+            else
+            {
+                //Populate Class Properties with defaults
+                DecryptedValue = "";
+                EncryptedValue = "";
+                EncryptedInitializationVector = "";
+                EncryptedValueEncodingType = encryptedDataEncodingType;
+            }
         }
         #endregion
 
@@ -318,61 +331,61 @@ namespace RygDataModel
         /// By default using StringEncodingType.HexStringShort it returns a 128 character string (64 bytes x 2 for hex).  
         /// </returns>
         public static string CreateHash(string dataToHash,
-                                        string hashDataSaltValue = "",
-                                        string hashDataExtraSaltValue = "",
-                                        string hashSecretKeyValue = "",
-                                        string hashKeySaltValue = "",
-                                        string hashKeyExtraSaltValue = "",
-                                        StringEncodingType hashStringOutputType = StringEncodingType.HexStringShort)
-        {
-
-            StringBuilder _hFiller = new(@"UeQqg_NRqEàGtSP2oihULwĘgWbFTUBg9_DéeUNfDKssLZ_ßQgIQVcp6lvU°_MpEscATc1Eàg_oyqiVwYhE-ueFU6p6XZxA©wsR1fOJNkHG¾lim-kHUjPB1ĘAmzVaRnwzlf+NHFhiAZUD_Hàwj9ahg_4nsq¦rB7Sk4xhnoB§wd6di229YlXàJeLiZy-Og6B*w8ZZRUVEZMg¾90h3wplQzkAĘgd20tXgSqND*Rctcs2audIaéAahQDCAj0FY±UUcyzfMVu0p#w1DxqYSCiv3^rH-ttLP49Aq¦AbY5Y6KtJiC±C4Y3grs3LMS^AzlgLbTkreZ§8BghU0JcpzP±ACFkgcRx2IS.j8rTjq4eiDI^gV0IMxoT_80~hCb_Q86-bUd¢QXWY39p91O7ĘCgExIeUS_Ho~w-algWsMBrIĘl-nwM1-rWGbégx3MS1NzwShØaojo9tOtQUQ-A3L3--K87W3#VvUNBEDYg05±g4CWm7TIr49=WsS_YHuKQ5k_A1G9Va8Ff");
-
-            //Stringbuilder for performance 
-            StringBuilder _sb = new(hashSecretKeyValue);
-            _sb.Append(hashKeySaltValue);
-
-            //add hardcoded salt for an extra layer of abstraction/obfuscation security
-            //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
-            _sb.Append(@"_42*L²=@^ç");
-            _sb.Append((char)95);
-            _sb.Append((char)122);
-            _sb.Append('è');
-            _sb.Append((char)126);
-            _sb.Append('&');
-            _sb.Append((char)42);
-            _sb.Append((char)92);
-            _sb.Append((char)123);
-            _sb.Append('-');
-            _sb.Append((char)93);
-            _sb.Append((char)72);
-            _sb.Append((char)48);
-            _sb.Append(hashKeyExtraSaltValue);
-            _sb.Append(_hFiller.ToString().Substring(256, 128));
-            _hFiller.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-
-            //instantiate the class with supplied key and salts
-            HashAlgorithm _hashService;
-            if (hashSecretKeyValue == "")
+                                            string hashDataSaltValue = "",
+                                            string hashDataExtraSaltValue = "",
+                                            string hashSecretKeyValue = "",
+                                            string hashKeySaltValue = "",
+                                            string hashKeyExtraSaltValue = "",
+                                            StringEncodingType hashStringOutputType = StringEncodingType.HexStringShort)
             {
-                _hashService = SHA512.Create(); //yep, aware that this code will not run but leaving it here as a placeholder should it be useful in future.
+
+                StringBuilder _hFiller = new(@"UeQqg_NRqEàGtSP2oihULwĘgWbFTUBg9_DéeUNfDKssLZ_ßQgIQVcp6lvU°_MpEscATc1Eàg_oyqiVwYhE-ueFU6p6XZxA©wsR1fOJNkHG¾lim-kHUjPB1ĘAmzVaRnwzlf+NHFhiAZUD_Hàwj9ahg_4nsq¦rB7Sk4xhnoB§wd6di229YlXàJeLiZy-Og6B*w8ZZRUVEZMg¾90h3wplQzkAĘgd20tXgSqND*Rctcs2audIaéAahQDCAj0FY±UUcyzfMVu0p#w1DxqYSCiv3^rH-ttLP49Aq¦AbY5Y6KtJiC±C4Y3grs3LMS^AzlgLbTkreZ§8BghU0JcpzP±ACFkgcRx2IS.j8rTjq4eiDI^gV0IMxoT_80~hCb_Q86-bUd¢QXWY39p91O7ĘCgExIeUS_Ho~w-algWsMBrIĘl-nwM1-rWGbégx3MS1NzwShØaojo9tOtQUQ-A3L3--K87W3#VvUNBEDYg05±g4CWm7TIr49=WsS_YHuKQ5k_A1G9Va8Ff");
+
+                //Stringbuilder for performance 
+                StringBuilder _sb = new(hashSecretKeyValue);
+                _sb.Append(hashKeySaltValue);
+
+                //add hardcoded salt for an extra layer of abstraction/obfuscation security
+                //NB: Do NOT change this code as it will render data generated by open source users of the software useless.
+                _sb.Append(@"_42*L²=@^ç");
+                _sb.Append((char)95);
+                _sb.Append((char)122);
+                _sb.Append('è');
+                _sb.Append((char)126);
+                _sb.Append('&');
+                _sb.Append((char)42);
+                _sb.Append((char)92);
+                _sb.Append((char)123);
+                _sb.Append('-');
+                _sb.Append((char)93);
+                _sb.Append((char)72);
+                _sb.Append((char)48);
+                _sb.Append(hashKeyExtraSaltValue);
+                _sb.Append(_hFiller.ToString().Substring(256, 128));
+                _hFiller.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+
+                //instantiate the class with supplied key and salts
+                HashAlgorithm _hashService;
+                if (hashSecretKeyValue == "")
+                {
+                    _hashService = SHA512.Create(); //yep, aware that this code will not run but leaving it here as a placeholder should it be useful in future.
+                }
+                else
+                {
+                    _hashService = new HMACSHA512(Encoding.UTF8.GetBytes(_sb.ToString()));
+                }
+
+                //Salt the hash data itself (only done with actual *data* when _hashing_)
+                _sb.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+                _sb.Append(dataToHash);
+                _sb.Append(hashDataSaltValue);
+                _sb.Append(hashDataExtraSaltValue);
+
+                byte[] _hashResult = _hashService.ComputeHash(Encoding.UTF8.GetBytes(_sb.ToString()));
+                _sb.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
+
+                return ConvertBytesToStringEncodingType(_hashResult, hashStringOutputType);
             }
-            else
-            {
-                _hashService = new HMACSHA512(Encoding.UTF8.GetBytes(_sb.ToString()));
-            }
-
-            //Salt the hash data itself (only done with actual *data* when _hashing_)
-            _sb.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-            _sb.Append(dataToHash);
-            _sb.Append(hashDataSaltValue);
-            _sb.Append(hashDataExtraSaltValue);
-
-            byte[] _hashResult = _hashService.ComputeHash(Encoding.UTF8.GetBytes(_sb.ToString()));
-            _sb.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
-
-            return ConvertBytesToStringEncodingType(_hashResult, hashStringOutputType);
-        }
 
         /// <summary>
         /// Use cryptographically strong random number generator to create a random salt text value.  
@@ -479,7 +492,5 @@ namespace RygDataModel
             return _retStr;
         }
         #endregion
-
     }
-
 }

@@ -260,6 +260,128 @@ namespace RygDataModel
             };
         }
 
+        #region String Manipulation Helpers
+        /// <summary>
+        /// Trim or Pad a given string using the requested method.
+        /// </summary>
+        /// <param name="textToTrimOrPad">The string to pad or trim.</param>
+        /// <param name="maxLength">The maximum length of the output string, the string will be trimmed (or padded depending on the minLength value).</param>
+        /// <param name="minLength">The minimum length of the output string, the string will be padded if the lengthis less than this value.</param>
+        /// <param name="trimOrPadInString">The method for trimming or Padding.  Inserts or trims the value from inside the string.</param>
+        /// <param name="trimOrPadLeft">The method for trimming or Padding.  Inserts or trims the value at the beginning of the string.</param>
+        /// <param name="trimOrPadRight">The method for trimming or Padding.  Inserts or trims the value at the end of the string.</param>
+        /// <param name="padRandom">The method for trimming or Padding.  Inserts or trims the characters randomly in the string.  DO NOT use for long term symmetric encryption as it can't be replicated for decryption..</param>
+        /// <param name="padCharacters">If provided, use this set of characters for padding.  If omitted, a predefined set of characters will be used.</param>
+        /// <returns></returns>
+        public static string TrimOrPadText(string textToTrimOrPad,
+                                           int maxLength,
+                                           int minLength = 0,
+                                           bool trimOrPadInString = true,
+                                           bool trimOrPadLeft = false,
+                                           bool trimOrPadRight = false,
+                                           bool padRandom = false,
+                                           string padCharacters = "")
+        {
+            string _resStr = textToTrimOrPad;
+
+            StringBuilder _sb = new(textToTrimOrPad);
+            if (_sb.Length > maxLength)
+            {
+                //Trim
+                if (trimOrPadInString)
+                {
+                    int _rStr = (int)Math.Floor(((double)_sb.Length - (double)maxLength) / Math.Sqrt((double)_sb.Length - (double)maxLength));
+                    _sb.Remove((_rStr < 0 ? _sb.Length - maxLength - 1 : _rStr), _sb.Length - maxLength);
+                    _resStr = _sb.ToString();
+                }
+                else if (trimOrPadLeft)
+                {
+                    _resStr = textToTrimOrPad.Substring(0, maxLength);
+                }
+                else if (trimOrPadRight)
+                {
+                    _resStr = textToTrimOrPad.Substring(textToTrimOrPad.Length - maxLength - 1, maxLength);
+                }
+            }
+            else if (_sb.Length < minLength)
+            {
+                //Pad
+                if (padCharacters.Length == 0)
+                {
+                    if (textToTrimOrPad.Length < 4)
+                    {
+                        padCharacters = @"OBB¤cxHléLpBrßHVnj¼HeIV~F6Aq®EzP";
+                    }
+                    else
+                    {
+                        padCharacters = textToTrimOrPad;
+                    }
+                }
+
+                if (padRandom)
+                {
+                    //Random padding insertion: DO NOT use for symetric long term encryption as it can't be replicated when decrypting
+                    if (trimOrPadInString)
+                    {
+                        Random _rndFrom = new();
+                        Random _rndTo = new((int)Math.Sqrt(int.MaxValue) + (DateTime.Now.Millisecond * 1000) + (DateTime.Now.Year - DateTime.Now.Minute) - (DateTime.Now.Hour * 10));
+                        do
+                        {
+                            _sb.Insert(_rndTo.Next(0, _sb.Length - 1),
+                                       padCharacters.Substring(_rndFrom.Next(0, padCharacters.Length - 1), 1));
+                        } while (_sb.Length < maxLength);
+                    }
+                    else
+                    {
+                        Random _rndFrom = new();
+                        do
+                        {
+                            if (trimOrPadRight)
+                            {
+                                _sb.Append(padCharacters.Substring(_rndFrom.Next(0, padCharacters.Length - 1), 1));
+                            }
+                            else
+                            {
+                                _sb.Insert(0, padCharacters.Substring(_rndFrom.Next(0, padCharacters.Length - 1), 1));
+                            }
+                        } while (_sb.Length < maxLength);
+                    }
+                }
+                else
+                {
+                    //Fixed padding insertion: DO use for symetric long term encryption as it can be replicated when decrypting
+                    StringBuilder _sbInsert = new();
+                    do
+                    {
+                        _sbInsert.Append(padCharacters);
+                    } while (_sbInsert.Length < maxLength - _sb.Length + 1);
+                    if (_sb.Length > maxLength)
+                    {
+                        _sb.Remove(0, _sb.Length - maxLength);
+                    }
+                    if (trimOrPadInString)
+                    {
+                        int _rStr = (int)Math.Floor(((double)_sb.Length - (double)maxLength) / Math.Sqrt((double)_sb.Length - (double)maxLength));
+                        _sb.Insert((_rStr < 0 ? _sb.Length - maxLength - 1 : _rStr), _sbInsert);
+                    }
+                    else
+                    {
+                        if (trimOrPadRight)
+                        {
+                            _sb.Append(_sbInsert);
+                        }
+                        else
+                        {
+                            _sb.Insert(0, _sbInsert);
+                        }
+                    }
+                }
+            }
+
+            return _resStr;
+        }
+        #endregion
+
         #region Data Type Conversion Helpers
         /// <summary>
         /// Convert a byte array to a string in the StringEncodingType format requested.
