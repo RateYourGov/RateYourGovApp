@@ -96,7 +96,8 @@ namespace RygDataModel
             //require at least one of the following
             if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyExtraSaltValue.Trim().Length) < 1)
             {
-                throw new Exception("No Secret Key or Salt Values supplied for encryption.");
+                throw new ArgumentNullException(nameof(dataSecretKeyValue),
+                                                  "No Secret Key or Salt Values supplied for encryption.");
             }
 
             //If there is no data to encrypt, don't encrypt it
@@ -134,7 +135,7 @@ namespace RygDataModel
                 }
                 _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
-                byte[] _useKey = Encoding.UTF8.GetBytes(_sbDataKey.ToString().Substring(3, 31));
+                byte[] _useKey = Encoding.UTF8.GetBytes(_sbDataKey.ToString().Substring(0, 31));
                 _sbDataKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
                 //Create the AES Encryption Cipher 
@@ -173,32 +174,12 @@ namespace RygDataModel
         /// Returns the data in the Class Property fields.  
         /// NB: When reading from the Database, use the StringEncodingType.Base64url string format as a standard. 
         /// </remarks>
-        /// <param name="dataToDecrypt">
-        /// The string to Decrypt in UTF8 format.
-        /// </param>
-        /// <param name="dataSecretKeyValue">
-        /// The securely stored key to be seeded and used to perform the Decryption in UTF8 format.  
-        /// NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 
-        /// if it is stored in another format in your secured configuration.
-        /// </param>
-        /// <param name="useInitializationVectorValue">
-        /// The StringEncodingType.Base64url formatted string cipher IV value to use to Decrypt the data.  
-        /// Leave blank for the value to be calculated if the encrypted data contains the IV, 
-        /// typically the case when using encrypted values read from the Database.
-        /// </param>
-        /// <param name="dataKeySaltValue">
-        /// The Salt value to be added to the key itself to perform the Decryption.  
-        /// NB: This must match the value originally used when encrypting the data.
-        /// </param>
-        /// <param name="dataKeyExtraSaltValue">
-        /// The Additional Salt value to be added to the key itself to perform the Decryption.  
-        /// NB: This must match the value originally used when encrypting the data.
-        /// </param>
-        /// <param name="encryptedDataEncodingType">
-        /// The string format of the Encrypted data.  
-        /// Note that the standard to be used when reading/writing from/to the Database is StringEncodingType.Base64url 
-        /// as it is most compatible with the majority of DB engines and is both URL and File Name safe.
-        /// </param>
+        /// <param name="dataToDecrypt">The string to Decrypt in UTF8 format.</param>
+        /// <param name="dataSecretKeyValue">The securely stored key to be seeded and used to perform the Decryption in UTF8 format.  NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 if it is stored in another format in your secured configuration.</param>
+        /// <param name="useInitializationVectorValue">The StringEncodingType.Base64url formatted string cipher IV value to use to Decrypt the data.  Leave blank for the value to be calculated if the encrypted data contains the IV, typically the case when using encrypted values read from the Database.</param>
+        /// <param name="dataKeySaltValue">The Salt value to be added to the key itself to perform the Decryption.  NB: This must match the value originally used when encrypting the data.</param>
+        /// <param name="dataKeyExtraSaltValue">The Additional Salt value to be added to the key itself to perform the Decryption.  NB: This must match the value originally used when encrypting the data.</param>
+        /// <param name="encryptedDataEncodingType">The string format of the Encrypted data.  Note that the standard to be used when reading/writing from/to the Database is StringEncodingType.Base64url as it is most compatible with the majority of DB engines and is both URL and File Name safe.</param>
         public void DecryptData(string dataToDecrypt,
                                 string dataSecretKeyValue = "",
                                 string useInitializationVectorValue = "",
@@ -206,10 +187,12 @@ namespace RygDataModel
                                 string dataKeyExtraSaltValue = "",
                                 StringEncodingType encryptedDataEncodingType = StringEncodingType.Base64url)
         {
+
             //require at least one of the following
             if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyExtraSaltValue.Trim().Length) < 1)
             {
-                throw new Exception("No Secret Key or Salt Values supplied for decryption.");
+                throw new ArgumentNullException(nameof(dataSecretKeyValue),
+                                                 "No Secret Key or Salt Values supplied for decryption.");
             }
 
             //Validate that we have an IV to perform the decryption
@@ -222,7 +205,9 @@ namespace RygDataModel
                 }
                 else
                 {
-                    throw new ApplicationException("Cipher Initialization Vector Value not supplied or found in requested data to decrypt, decryption of data not possible.");
+                    ArgumentNullException argumentNullException = new(nameof(useInitializationVectorValue),
+                                                                       "Cipher Initialization Vector Value not supplied or found in requested data to decrypt, decryption of data not possible.");
+                    throw argumentNullException;
                 }
             }
             else if (dataToDecrypt.Contains(";", StringComparison.CurrentCulture))
@@ -233,7 +218,7 @@ namespace RygDataModel
                 }
                 else
                 {
-                    throw new ApplicationException("Cipher Initialization Vector Value was supplied, but a different Initialization Vector was also found in the data to decrypt.  Decryption of data not possible.");
+                    throw new ArgumentException("Cipher Initialization Vector Value was supplied, but a different Initialization Vector was also found in the data to decrypt.  Decryption of data not possible.");
                 }
             }
 
@@ -272,7 +257,7 @@ namespace RygDataModel
                 }
                 _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
-                byte[] _useKey = Encoding.UTF8.GetBytes(_sbDataKey.ToString().Substring(3, 31));
+                byte[] _useKey = Encoding.UTF8.GetBytes(_sbDataKey.ToString().Substring(0, 31));
                 _sbDataKey.Clear();  //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
                 //Create the AES Decryption Cipher 
@@ -287,10 +272,21 @@ namespace RygDataModel
                 //Create the Decryptor, convert source data to bytes, and Decrypt
                 ICryptoTransform _cryptService = _cryptCipher.CreateDecryptor();
                 byte[] _bytesToDecrypt = ConvertStringEncodingTypeToBytes(dataToDecrypt, encryptedDataEncodingType);  //Encoding.UTF8.GetBytes(dataToDecrypt);
-                byte[] _decryptedBytes = _cryptService.TransformFinalBlock(_bytesToDecrypt, 0, _bytesToDecrypt.Length);
+                try
+                {
+                    byte[] _decryptedBytes = _cryptService.TransformFinalBlock(_bytesToDecrypt, 0, _bytesToDecrypt.Length);
+                    DecryptedValue = ConvertBytesToStringEncodingType(_decryptedBytes, StringEncodingType.UTF8);
+                }
+                catch (Exception ex)
+                {
+                    DecryptedValue = "";
+                    if (ex.Message.ToLower().Contains("Padding is invalid and cannot be removed".ToLower(), StringComparison.CurrentCulture))
+                    {
+                        throw new Exception("Unable to Decrypt the data. Are you using the correct Keys, Salts and Initialization Vector?", ex);
+                    }
+                }
 
                 //Populate Class Properties with Decrypted results
-                DecryptedValue = ConvertBytesToStringEncodingType(_decryptedBytes, StringEncodingType.UTF8);
                 EncryptedValue = dataToDecrypt;
                 EncryptedInitializationVector = ConvertBytesToStringEncodingType(_cryptCipher.IV, StringEncodingType.Base64url);
                 EncryptedValueEncodingType = encryptedDataEncodingType;
@@ -393,23 +389,57 @@ namespace RygDataModel
         /// <remarks>
         /// NB: This value should be stored when used for Hashing/Encryption as it is required to Validate the Hash/Decrypt the value.  
         /// </remarks>
-        /// <param name="numberOfBytes">The number of bytes to use to generate the Salt.</param>
-        /// <param name="stringOutputType">The format of the string to return.</param>
-        /// <param name="generatedStringLength">Force the generated string to this length.  Omit or 0 value outputs the string length based on the NumberOfBytes parameter.</param>
-        /// <param name="insertSpecialCharacterEveryNumberOfCharacters">Optionally insert a random special character after every X number of characters in the string.</param>
-        /// <param name="overrideOutputType">Show the special inserted characters in the output string, NB: the selected stringOutputType will be unconvertable.</param>
-        /// <param name="SpecialCharactersToUseForInsert">Optional list of special characters to use for the insert.  e.g. @"$.#_^".  If not specified and Insert was requested, the preconfigured list will be used.</param>
-        /// <returns></returns>
-        public static string GenerateRandomSalt(int numberOfBytes = 16,
-                                                StringEncodingType stringOutputType = StringEncodingType.Base64url,
+        /// <param name="generatedStringLength">
+        /// Force the generated string to this length.  
+        /// Omit or 0 value outputs the string length based on the NumberOfBytes parameter.
+        /// </param>
+        /// <param name="insertSpecialCharacterEveryNumberOfCharacters">
+        /// Optionally insert a random special character after every X number of characters in the string.  
+        /// If randomizeNumberOfCharacters is true this is the maximum number for the random number range. 
+        /// </param>
+        /// <param name="randomizeNumberOfCharacters">
+        /// Insert at random intervals between every 1 and insertSpecialCharacterEveryNumberOfCharacters characters.
+        /// </param>
+        /// <param name="minimumRandomNumberOfCharacters">
+        /// The minimum number of characters to use when inserting characters art random intervals.  
+        /// Useful because having a random character inserted ever 1-3 characters of a limited length string 
+        /// actually makes is less secure.
+        /// </param>
+        /// <param name="SpecialCharactersToUseForInsert">
+        /// Optional list of special characters to use for the insert.  e.g. @"$.#_^".  
+        /// If not specified and Insert was requested, the preconfigured list will be used.
+        /// </param>
+        /// <param name="overrideOutputType">
+        /// Add the special inserted characters to the output string.  
+        /// NB: the selected stringOutputType will be unconvertable.
+        /// If false and insertSpecialCharacterEveryNumberOfCharacters is true, 
+        /// the special characters will be added to the salt before converting to the output type.
+        /// </param>
+        /// <param name="numberOfBytes">
+        /// The number of bytes to use to generate the Salt.
+        /// </param>
+        /// <param name="stringOutputType">The format of the string to return.
+        /// </param>
+        /// <returns>
+        /// The Random Salt generated as a string.
+        /// </returns>
+        public static string GenerateRandomSalt(StringEncodingType stringOutputType = StringEncodingType.Base64url,
                                                 int generatedStringLength = 0,
                                                 int insertSpecialCharacterEveryNumberOfCharacters = 0,
+                                                bool randomizeNumberOfCharacters = false,
+                                                int minimumRandomNumberOfCharacters = 0,
+                                                string SpecialCharactersToUseForInsert = "",
                                                 bool overrideOutputType = false,
-                                                string SpecialCharactersToUseForInsert = "")
+                                                int numberOfBytes = 16)
         {
             byte[] newSalt = new byte[numberOfBytes];
             string _retStr;
 
+            //validate parameters
+            if (generatedStringLength < 0)
+            {
+                throw new Exception("generatedStringLength can't be negative.");
+            }
             if (generatedStringLength > 0 && stringOutputType == StringEncodingType.HexStringShort)
             {
                 if (generatedStringLength % 2 != 0)
@@ -427,12 +457,32 @@ namespace RygDataModel
                     }
                 }
             }
-
-            if (insertSpecialCharacterEveryNumberOfCharacters > 0 && SpecialCharactersToUseForInsert.Trim() == "")
+            if (randomizeNumberOfCharacters && insertSpecialCharacterEveryNumberOfCharacters < 1)
             {
-                SpecialCharactersToUseForInsert = @"=#^@é¾ß¦§à*+~²±%_°©ØàßĘ¢";
+                throw new Exception("insertSpecialCharacterEveryNumberOfCharacters must have a positive value if randomizeNumberOfCharacters is true.");
+            }
+            if (generatedStringLength != 0 && (insertSpecialCharacterEveryNumberOfCharacters >= generatedStringLength))
+            {
+                throw new Exception("insertSpecialCharacterEveryNumberOfCharacters must be less than generatedStringLength.");
+            }
+            if (minimumRandomNumberOfCharacters > 0 && !randomizeNumberOfCharacters)
+            {
+                throw new Exception("minimumRandomNumberOfCharacters specified but randomizeNumberOfCharacters is false.");
+            }
+            if ((minimumRandomNumberOfCharacters > 0) &&
+                ((generatedStringLength > 0) &&
+                 (minimumRandomNumberOfCharacters >= generatedStringLength)))
+            {
+                throw new Exception("minimumRandomNumberOfCharacters must be greater than generatedStringLength.");
             }
 
+            //set up special character list
+            if (insertSpecialCharacterEveryNumberOfCharacters > 0 && SpecialCharactersToUseForInsert.Trim() == "")
+            {
+                SpecialCharactersToUseForInsert = @"é±&*à+çù€_^°è$¤²§%~`#£µ";
+            }
+
+            //generate the cryptographicqally strong salt value
             if (generatedStringLength > 0)
             {
                 _retStr = "";
@@ -465,16 +515,34 @@ namespace RygDataModel
                 }
             }
 
-            if (insertSpecialCharacterEveryNumberOfCharacters > 0 &&
-                _retStr.Length > 0 &&
-                _retStr.Length >= insertSpecialCharacterEveryNumberOfCharacters)
+            //insert special characters
+            if (insertSpecialCharacterEveryNumberOfCharacters > 0)
             {
                 int i = 0;
-                Random _rnd = new((DateTime.Now.Millisecond * 100) + (DateTime.Now.Second * 10) + (DateTime.Now.Minute * 5) - (DateTime.Now.Hour * 2) + (DateTime.Now.Year - DateTime.Now.Month));
+                Random _rndFrom = new();
+                Random _rndTo = new((DateTime.Now.Millisecond * 100) +
+                                    (DateTime.Now.Second * 10) +
+                                    (DateTime.Now.Minute * 5) -
+                                    (DateTime.Now.Hour * 2) +
+                                    (DateTime.Now.Year - DateTime.Now.Month - DateTime.Now.DayOfYear));
                 do
                 {
-                    i += insertSpecialCharacterEveryNumberOfCharacters;
-                    _retStr = _retStr.Insert(i - 1, SpecialCharactersToUseForInsert.Substring(_rnd.Next(0, SpecialCharactersToUseForInsert.Length - 1), 1));
+                    if (randomizeNumberOfCharacters)
+                    {
+                        if (minimumRandomNumberOfCharacters > 0)
+                        {
+                            i += _rndTo.Next(minimumRandomNumberOfCharacters, insertSpecialCharacterEveryNumberOfCharacters);
+                        }
+                        else
+                        {
+                            i += _rndTo.Next(1, insertSpecialCharacterEveryNumberOfCharacters);
+                        }
+                    }
+                    else
+                    {
+                        i += insertSpecialCharacterEveryNumberOfCharacters;
+                    }
+                    _retStr = _retStr.Insert(i - 1, SpecialCharactersToUseForInsert.Substring(_rndFrom.Next(0, SpecialCharactersToUseForInsert.Length - 1), 1));
                     i++;
                 } while (i < (_retStr.Length - insertSpecialCharacterEveryNumberOfCharacters));
 
