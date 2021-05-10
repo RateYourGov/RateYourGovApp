@@ -109,6 +109,74 @@ namespace RygDataModel
                 double _saltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
                 double _extraSaltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
 
+                //Add any rounding lefovers back to try and ensure that the non-code key is 24 characters long
+                if (((int)_keyLen + (int)_saltLen + (int)_extraSaltLen) < 24)
+                {
+                    int _xtraLen = 24 - ((int)_keyLen + (int)_saltLen + (int)_extraSaltLen);
+                    if (dataSecretKeyValue.Length >= ((int)_keyLen + _xtraLen))
+                    {
+                        _keyLen += _xtraLen;
+                        _xtraLen = 0;
+                    }
+                    else if (_xtraLen > 2 && dataSecretKeyValue.Length >= ((int)_keyLen + 3))
+                    {
+                        _keyLen += 3;
+                        _xtraLen -= 3;
+                    }
+                    else if (_xtraLen > 1 && dataSecretKeyValue.Length >= ((int)_keyLen + 2))
+                    {
+                        _keyLen += 2;
+                        _xtraLen -= 2;
+                    }
+                    else if (_xtraLen > 0 && dataSecretKeyValue.Length >= ((int)_keyLen + 1))
+                    {
+                        _keyLen += 1;
+                        _xtraLen -= 1;
+                    }
+                    if (_xtraLen > 0)
+                    {
+                        if (dataKeySaltValue.Length >= ((int)_saltLen + _xtraLen))
+                        {
+                            _saltLen += _xtraLen;
+                            _xtraLen = 0;
+                        }
+                        else if (_xtraLen > 2 && dataKeySaltValue.Length >= ((int)_saltLen + 3))
+                        {
+                            _saltLen += 3;
+                            _xtraLen -= 3;
+                        }
+                        else if (_xtraLen > 1 && dataKeySaltValue.Length >= ((int)_saltLen + 2))
+                        {
+                            _saltLen += 2;
+                            _xtraLen -= 2;
+                        }
+                        else if (_xtraLen > 0 && dataKeySaltValue.Length >= ((int)_saltLen + 1))
+                        {
+                            _saltLen += 1;
+                            _xtraLen -= 1;
+                        }
+                    }
+                    if (_xtraLen > 0)
+                    {
+                        if (dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + _xtraLen))
+                        {
+                            _extraSaltLen += _xtraLen;
+                        }
+                        else if (_xtraLen > 2 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 3))
+                        {
+                            _extraSaltLen += 3;
+                        }
+                        else if (_xtraLen > 1 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 2))
+                        {
+                            _extraSaltLen += 2;
+                        }
+                        else if (_xtraLen > 0 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 1))
+                        {
+                            _extraSaltLen += 1;
+                        }
+                    }
+                }
+
                 //Generate the Encryption Key that will use the obfuscated key ensuring a 256 bit/64 byte/32 char key length.
                 StringBuilder _dFiller = new(@"*TFTzsSoU7dYDqHf8T#pOrPw9TL7rrm*I_éàT<à@wcfl-1i#y9v7*à@1à6bb3711-éé3*20a5-é446=7à-b4*8c-f2a577_ac=b4''''cbmg<I9*à0éVWgnX-xyéfuàc*DV1jQY_XQO=éséLqA2S8ER*wgPGE4_b3àc=cd2a-abé5éeé-4488-96d6-6*ccè2=bc49fà6é43JSfè2W-zfPé=Yp9Vàhgé4*_UOsce10ENK=OWrzAQNRymI-*WObzPwfETAhgw");
                 //Stringbuilder for performance
@@ -230,6 +298,74 @@ namespace RygDataModel
                 double _keyLen = Math.Floor((dataSecretKeyValue.Length / _keysLen) * 24D);
                 double _saltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
                 double _extraSaltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
+
+                //Add any rounding lefovers back to try and ensure that the non-code key is 24 characters long
+                if (((int)_keyLen + (int)_saltLen + (int)_extraSaltLen) < 24)
+                {
+                    int _xtraLen = 24 - ((int)_keyLen + (int)_saltLen + (int)_extraSaltLen);
+                    if (dataSecretKeyValue.Length >= ((int)_keyLen + _xtraLen))
+                    {
+                        _keyLen += _xtraLen;
+                        _xtraLen = 0;
+                    }
+                    else if (_xtraLen > 2 && dataSecretKeyValue.Length >= ((int)_keyLen + 3))
+                    {
+                        _keyLen += 3;
+                        _xtraLen -= 3;
+                    }
+                    else if (_xtraLen > 1 && dataSecretKeyValue.Length >= ((int)_keyLen + 2))
+                    {
+                        _keyLen += 2;
+                        _xtraLen -= 2;
+                    }
+                    else if (_xtraLen > 0 && dataSecretKeyValue.Length >= ((int)_keyLen + 1))
+                    {
+                        _keyLen += 1;
+                        _xtraLen -= 1;
+                    }
+                    if (_xtraLen > 0)
+                    {
+                        if (dataKeySaltValue.Length >= ((int)_saltLen + _xtraLen))
+                        {
+                            _saltLen += _xtraLen;
+                            _xtraLen = 0;
+                        }
+                        else if (_xtraLen > 2 && dataKeySaltValue.Length >= ((int)_saltLen + 3))
+                        {
+                            _saltLen += 3;
+                            _xtraLen -= 3;
+                        }
+                        else if (_xtraLen > 1 && dataKeySaltValue.Length >= ((int)_saltLen + 2))
+                        {
+                            _saltLen += 2;
+                            _xtraLen -= 2;
+                        }
+                        else if (_xtraLen > 0 && dataKeySaltValue.Length >= ((int)_saltLen + 1))
+                        {
+                            _saltLen += 1;
+                            _xtraLen -= 1;
+                        }
+                    }
+                    if (_xtraLen > 0)
+                    {
+                        if (dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + _xtraLen))
+                        {
+                            _extraSaltLen += _xtraLen;
+                        }
+                        else if (_xtraLen > 2 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 3))
+                        {
+                            _extraSaltLen += 3;
+                        }
+                        else if (_xtraLen > 1 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 2))
+                        {
+                            _extraSaltLen += 2;
+                        }
+                        else if (_xtraLen > 0 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 1))
+                        {
+                            _extraSaltLen += 1;
+                        }
+                    }
+                }
 
                 //Generate the Encryption Key that will use the obfuscated key ensuring a 256 bit/64 byte/32 char key length.
                 StringBuilder _dFiller = new(@"*TFTzsSoU7dYDqHf8T#pOrPw9TL7rrm*I_éàT<à@wcfl-1i#y9v7*à@1à6bb3711-éé3*20a5-é446=7à-b4*8c-f2a577_ac=b4''''cbmg<I9*à0éVWgnX-xyéfuàc*DV1jQY_XQO=éséLqA2S8ER*wgPGE4_b3àc=cd2a-abé5éeé-4488-96d6-6*ccè2=bc49fà6é43JSfè2W-zfPé=Yp9Vàhgé4*_UOsce10ENK=OWrzAQNRymI-*WObzPwfETAhgw");

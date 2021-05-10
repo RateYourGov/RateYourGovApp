@@ -7,18 +7,17 @@ namespace UnitTests
     [TestClass]
     public class CryptoTests
     {
-
         //Decryption Tests
         [TestMethod]
         public void TestDecryptDatabaseValue()
         {
             // Configure
-            string _encryptedData = @"YCIB5g4KRcHNEtxPEbR487nqFgS43_4Ko60FyqC5Qc0vkxsb6tcn71E4velwc1d1fm5WlSU36NjjgOMr4Xb48w;VpBZYZMvHtiJOeA74UqHyA"; //base64url is the default expected input
+            string _encryptedData = @"CxWNM8QEyx09pSmhWvw-3wY09cSFZt8EiUk0wLy68Obfj-93VTIE5izuJpOyITUfl5lGfzBJFNBUrHnchpRB9g;bqj6CmlVy0JIG8LbP_Ra5Q"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
             string _initializationVector = @"";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
             string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
-            string _expectedResult = @"This is the Data to Encrypt on 2021-05-08 at 13:40:50...";
+            string _expectedResult = @"This is the Data to Encrypt on 2021-05-10 at 12:59:41...";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -45,12 +44,12 @@ namespace UnitTests
         public void TestDecryptDefaultType()
         {
             // Configure
-            string _encryptedData = @"yhLc1Bo9pQ-9f1VxXHpoDwXheV6IW3XPsJOF7QGGulnuGhLxj1OF6_Rsql8z-QetatKFY8-mpmJiSGxqf5T9Cw"; //base64url is the default expected input
+            string _encryptedData = @"CxWNM8QEyx09pSmhWvw-3wY09cSFZt8EiUk0wLy68Obfj-93VTIE5izuJpOyITUfl5lGfzBJFNBUrHnchpRB9g"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
-            string _initializationVector = @"jb2zeFCeJX1c6Iifachckw";
+            string _initializationVector = @"bqj6CmlVy0JIG8LbP_Ra5Q";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
             string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
-            string _expectedResult = @"This is the Data to Encrypt on 2021-05-08 at 14:00:29...";
+            string _expectedResult = @"This is the Data to Encrypt on 2021-05-10 at 12:59:41...";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -301,6 +300,5 @@ namespace UnitTests
             // Assert FAIL
             Assert.Fail("The expected exception was not thrown.");
         }
-
     }
 }
