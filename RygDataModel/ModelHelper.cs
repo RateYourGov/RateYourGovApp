@@ -712,5 +712,50 @@ namespace RygDataModel
         }
         #endregion
 
+        #region Value Comparison Helpers
+        /// <summary>
+        /// Cryptographically strong byte array comparison method using the XOR comparison method for speed.
+        /// </summary>
+        /// <param name="firstByteArray">The first byte array to compare.</param>
+        /// <param name="secondByteArray">The byte array to compare to.</param>
+        /// <returns>
+        /// true if the byte arrays are equal.
+        /// </returns>
+        /// <remarks>
+        /// This is a cryptographically secure comparison method, but it will take a little longer as it continues the comparison eveb if a mismatch is found to prevent timing attacks.
+        /// </remarks>
+        /// <seealso cref="https://www.syncfusion.com/succinctly-free-ebooks/application-security-in-net-succinctly/comparing-byte-arrays"/>
+        public static bool CompareByteArrayValuesSecurely(byte[] firstByteArray, byte[] secondByteArray)
+        {
+            int _xOr = firstByteArray.Length ^ secondByteArray.Length;
+            for (int i = 0; i < firstByteArray.Length && i < secondByteArray.Length; i++)
+            {
+                _xOr |= firstByteArray[i] ^ secondByteArray[i];
+            }
+            return _xOr == 0;
+        }
+        /// <summary>
+        /// Faster byte array comparison method using a simple comparison.
+        /// </summary>
+        /// <param name="firstByteArray">The first byte array to compare.</param>
+        /// <param name="secondByteArray">The byte array to compare to.</param>
+        /// <returns>
+        /// true if the byte arrays are equal.
+        /// </returns>
+        /// <remarks>
+        /// This is not a cryptographically secure comparison method and open to timing attacks.  
+        /// Use CompareByteArrayValuesSecurely for cryptographically strong comparisons when needed.
+        /// </remarks>
+        public static bool CompareByteArrayValues(byte[] firstByteArray, byte[] secondByteArray)
+        {
+            if (firstByteArray.Length != secondByteArray.Length) return false;
+            for (int i = 0; i < firstByteArray.Length && i < secondByteArray.Length; i++)
+            {
+                if (firstByteArray[i] != secondByteArray[i]) return false;
+            }
+            return true;
+        }
+        #endregion
+
     }
 }
