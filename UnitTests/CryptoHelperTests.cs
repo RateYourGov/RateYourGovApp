@@ -5,19 +5,19 @@ using RygDataModel;
 namespace UnitTests
 { 
     [TestClass]
-    public class CryptoTests
+    public class CryptoHelperTests
     {
         //Decryption Tests
         [TestMethod]
         public void TestDecryptDatabaseValue()
         {
             // Configure
-            string _encryptedData = @"ZQNya1STIIFAkAA4R6BF8tOX4nf-AR-v_G1DGeEQMWO6zBaFZB34rxJAt5g5uRE0n_8XFFDbv55efunfDlwF-Q;JUY57fZ7eh9A-r87R2BclA"; //base64url is the default expected input
+            string _encryptedData = @"F96bFAVtO71QIgJLWpM9kr6xq9xYhoO3IHUA82eQQ6LM74yRjDdle9R11YbFtqSmnDLx-YNqG6t13PQUI6KBWg;1ZtX0uH9sYOGgddqDcZulg"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
             string _initializationVector = @"";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
             string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
-            string _expectedResult = @"This is the Data to Encrypt on 2021-05-11 at 22:17:38...";
+            string _expectedResult = @"This is the Data to Encrypt on 2021-05-20 at 18:16:50...";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -39,17 +39,16 @@ namespace UnitTests
             // Assert
             Assert.AreEqual<string>(_expectedResult, _decryptor.DecryptedValue, "Decrypted data does not match the expected result.");
         }
-
         [TestMethod]
         public void TestDecryptDefaultType()
         {
             // Configure
-            string _encryptedData = @"ZQNya1STIIFAkAA4R6BF8tOX4nf-AR-v_G1DGeEQMWO6zBaFZB34rxJAt5g5uRE0n_8XFFDbv55efunfDlwF-Q"; //base64url is the default expected input
+            string _encryptedData = @"F96bFAVtO71QIgJLWpM9kr6xq9xYhoO3IHUA82eQQ6LM74yRjDdle9R11YbFtqSmnDLx-YNqG6t13PQUI6KBWg"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
-            string _initializationVector = @"JUY57fZ7eh9A-r87R2BclA";
+            string _initializationVector = @"1ZtX0uH9sYOGgddqDcZulg";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
             string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
-            string _expectedResult = @"This is the Data to Encrypt on 2021-05-11 at 22:17:38...";
+            string _expectedResult = @"This is the Data to Encrypt on 2021-05-20 at 18:16:50...";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -71,9 +70,8 @@ namespace UnitTests
             // Assert
             Assert.AreEqual<string>(_expectedResult, _decryptor.DecryptedValue, "Decrypted data does not match the expected result.");
         }
-
         [TestMethod]
-        public void TestDecryptFail()
+        public void TestDecryptFailError()
         {
             // Configure
             string _encryptedData = @"DTfpj4FZgbVNGQolovMMOpHJtTYBdpZ3fZObItcDZ04-kVe5K1XFawHLdh1GvTRuG0CPinhnoxv__yrUqQfw8Q"; //base64url is the default expected input
@@ -102,9 +100,8 @@ namespace UnitTests
             // Assert FAIL
             Assert.Fail("The expected exception was not thrown.");
         }
-
         [TestMethod]
-        public void TestDecryptWithDifferentVector()
+        public void TestDecryptWithDifferentVectorError()
         {
             // Configure
             string _encryptedData = @"ZQNya1STIIFAkAA4R6BF8tOX4nf-AR-v_G1DGeEQMWO6zBaFZB34rxJAt5g5uRE0n_8XFFDbv55efunfDlwF-Q;JUY57fZ7eh9A-r87R2BclA"; //base64url is the default expected input
@@ -141,9 +138,8 @@ namespace UnitTests
             // Assert FAIL
             Assert.Fail("The expected exception was not thrown.");
         }
-
         [TestMethod]
-        public void TestDecryptWithMissingKeysAndSalts()
+        public void TestDecryptWithMissingKeysAndSaltsError()
         {
             // Configure
             string _encryptedData = @"ZQNya1STIIFAkAA4R6BF8tOX4nf-AR-v_G1DGeEQMWO6zBaFZB34rxJAt5g5uRE0n_8XFFDbv55efunfDlwF-Q"; //base64url is the default expected input
@@ -180,9 +176,8 @@ namespace UnitTests
             // Assert FAIL
             Assert.Fail("The expected exception was not thrown.");
         }
-
         [TestMethod]
-        public void TestDecryptWithMissingVector()
+        public void TestDecryptWithMissingVectorError()
         {
             // Configure
             string _encryptedData = @"ZQNya1STIIFAkAA4R6BF8tOX4nf-AR-v_G1DGeEQMWO6zBaFZB34rxJAt5g5uRE0n_8XFFDbv55efunfDlwF-Q"; //base64url is the default expected input
@@ -266,7 +261,7 @@ namespace UnitTests
 
         //Encryption Tests
         [TestMethod]
-        public void TestEncryptWithMissingKeysAndSalts()
+        public void TestEncryptWithMissingKeysAndSaltsError()
         {
             // Configure
             string _unEncryptedData = $"This is the Data to Encrypt on 2021-05-07 at 20:07:13...";

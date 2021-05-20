@@ -270,7 +270,7 @@ namespace RygDataModel
         /// <param name="trimOrPadInString">The method for trimming or Padding.  Inserts or trims the value from inside the string.</param>
         /// <param name="trimOrPadLeft">The method for trimming or Padding.  Inserts or trims the value at the beginning of the string.</param>
         /// <param name="trimOrPadRight">The method for trimming or Padding.  Inserts or trims the value at the end of the string.</param>
-        /// <param name="padRandom">The method for trimming or Padding.  Inserts or trims the characters randomly in the string.  DO NOT use for long term symmetric encryption as it can't be replicated for decryption..</param>
+        /// <param name="trimOrPadRandom">The method for trimming or Padding.  Inserts or trims the characters randomly in the string.  DO NOT use for long term symmetric encryption as it can't be replicated for decryption..</param>
         /// <param name="padCharacters">If provided, use this set of characters for padding.  If omitted, a predefined set of characters will be used.</param>
         /// <returns></returns>
         public static string TrimOrPadText(string textToTrimOrPad,
@@ -279,9 +279,23 @@ namespace RygDataModel
                                            bool trimOrPadInString = true,
                                            bool trimOrPadLeft = false,
                                            bool trimOrPadRight = false,
-                                           bool padRandom = false,
+                                           bool trimOrPadRandom = false,
                                            string padCharacters = "")
         {
+            //Validation
+            if (trimOrPadInString && (trimOrPadLeft || trimOrPadRight))
+            {
+                throw new ArgumentException("You may only specify true for one of the Arguments: trimOrPadInString, trimOrPadLeft and trimOrPadRight.", nameof(trimOrPadInString));
+            }
+            else if (trimOrPadLeft && (trimOrPadInString || trimOrPadRight))
+            {
+                throw new ArgumentException("You may only specify true for one of the Arguments: trimOrPadInString, trimOrPadLeft and trimOrPadRight.", nameof(trimOrPadLeft));
+            }
+            else if (trimOrPadRight && (trimOrPadInString || trimOrPadLeft))
+            {
+                throw new ArgumentException("You may only specify true for one of the Arguments: trimOrPadInString, trimOrPadLeft and trimOrPadRight.", nameof(trimOrPadRight));
+            }
+
             string _resStr = textToTrimOrPad;
 
             StringBuilder _sb = new(textToTrimOrPad);
@@ -290,17 +304,30 @@ namespace RygDataModel
                 //Trim
                 if (trimOrPadInString)
                 {
-                    int _rStr = (int)Math.Floor(((double)_sb.Length - (double)maxLength) / Math.Sqrt((double)_sb.Length - (double)maxLength));
-                    _sb.Remove((_rStr < 0 ? _sb.Length - maxLength - 1 : _rStr), _sb.Length - maxLength);
-                    _resStr = _sb.ToString();
+                    if (trimOrPadRandom)
+                    {
+                        //Random character trim: DO NOT use for symetric long term encryption as it can't be replicated when decrypting
+                        Random _rnd = new();
+                        do
+                        {
+                            _sb.Remove(_rnd.Next(0, _sb.Length - 1), 1);
+                        } while (_sb.Length > maxLength);
+                    }
+                    else
+                    {
+                        //Fixed position insertion: DO use for symetric long term encryption as it can be replicated when decrypting
+                        int _rStr = (int)Math.Floor(((double)_sb.Length - (double)maxLength) / Math.Sqrt((double)_sb.Length - (double)maxLength));
+                        _sb.Remove((_rStr < 0 ? _sb.Length - maxLength - 1 : _rStr), _sb.Length - maxLength);
+                        _resStr = _sb.ToString();
+                    }
                 }
                 else if (trimOrPadLeft)
                 {
-                    _resStr = textToTrimOrPad.Substring(0, maxLength);
+                    _resStr = textToTrimOrPad.Substring(textToTrimOrPad.Length - maxLength, maxLength);
                 }
                 else if (trimOrPadRight)
                 {
-                    _resStr = textToTrimOrPad.Substring(textToTrimOrPad.Length - maxLength - 1, maxLength);
+                    _resStr = textToTrimOrPad.Substring(0, maxLength);
                 }
             }
             else if (_sb.Length < minLength)
@@ -308,17 +335,19 @@ namespace RygDataModel
                 //Pad
                 if (padCharacters.Length == 0)
                 {
+                    //If the text that we are padding is very short (or empty) we want to pad with different default characters
+                    //just to make things that little bit more obscure.
                     if (textToTrimOrPad.Length < 4)
                     {
-                        padCharacters = @"OBB¤cxHléLpBrßHVnj¼HeIV~F6Aq®EzP";
+                        padCharacters = textToTrimOrPad + @"¼Hù%£éI^ê~VçF6ËAq®EzPôB§¤cëxHléLpBrßHV€j";
                     }
                     else
                     {
-                        padCharacters = textToTrimOrPad;
+                        padCharacters = textToTrimOrPad + @"ôB§¤cxHléLpBrßHVnj¼HeIV~F6Aq®EzP";
                     }
                 }
 
-                if (padRandom)
+                if (trimOrPadRandom)
                 {
                     //Random padding insertion: DO NOT use for symetric long term encryption as it can't be replicated when decrypting
                     if (trimOrPadInString)
@@ -354,14 +383,14 @@ namespace RygDataModel
                     do
                     {
                         _sbInsert.Append(padCharacters);
-                    } while (_sbInsert.Length < maxLength - _sb.Length + 1);
-                    if (_sb.Length > maxLength)
+                    } while (_sbInsert.Length < maxLength - _sb.Length);
+                    if (_sbInsert.Length > maxLength - _sb.Length)
                     {
-                        _sb.Remove(0, _sb.Length - maxLength);
+                        _sbInsert.Remove(maxLength - _sb.Length, _sbInsert.Length - (maxLength - _sb.Length));
                     }
                     if (trimOrPadInString)
                     {
-                        int _rStr = (int)Math.Floor(((double)_sb.Length - (double)maxLength) / Math.Sqrt((double)_sb.Length - (double)maxLength));
+                        int _rStr = (int)Math.Floor((double)(maxLength - _sb.Length) / Math.Sqrt((double)(maxLength - _sb.Length)));
                         _sb.Insert((_rStr < 0 ? _sb.Length - maxLength - 1 : _rStr), _sbInsert);
                     }
                     else
@@ -376,6 +405,8 @@ namespace RygDataModel
                         }
                     }
                 }
+
+                _resStr = _sb.ToString();
             }
 
             return _resStr;
@@ -476,41 +507,57 @@ namespace RygDataModel
         /// <returns>The converted byte array</returns>
         public static byte[] ConvertByteArrayFromHexString(string sourceStringData)
         {
-
-            //if ((sourceStringData == null) || (sourceStringData.Length == 0) || (sourceStringData.Length % 2 > 0))
             if ((sourceStringData == null) || (sourceStringData?.Length < 2))
             {
                 if ((sourceStringData?.Length > 0) && (sourceStringData?.Length != 2))
                 {
-                    throw new ApplicationException($"Hex string values must be 2 characters in length.  Invalid string value {sourceStringData} can not be converted.");
+                    throw new ArgumentException($"Hex string values must be 2 characters in length.  Invalid string value {sourceStringData} can not be converted.", nameof(sourceStringData));
                 }
                 return null;
             }
             else
             {
-
-                string[] _strArray = sourceStringData.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-                if ((_strArray == null) || (_strArray?.Length == 0))
+                if (sourceStringData.Substring(0, 1) == "-")
                 {
-                    return null;
+                    throw new ArgumentException($"The first element is empty in string {sourceStringData}.", nameof(sourceStringData));
+                }
+                else if (sourceStringData.Substring(sourceStringData.Length - 1, 1) == "-")
+                {
+                    throw new ArgumentException($"The last element is empty in string {sourceStringData}.", nameof(sourceStringData));
+                }
+                else if (sourceStringData.Contains("--"))
+                {
+                    throw new ArgumentException($"There is an empty element at position {sourceStringData.LastIndexOf("--") + 1} of string {sourceStringData}.", nameof(sourceStringData));
                 }
                 else
                 {
-
-                    int strLen = _strArray.Length;
-                    byte[] _returnBytes = new byte[strLen];
-                    for (int i = 0; i < strLen; i++)
+                    string[] _strArray = sourceStringData.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    if ((_strArray == null) || (_strArray?.Length == 0))
                     {
-                        if (_strArray[i].ToString().Length != 2)
-                        {
-                            throw new ApplicationException($"Hex string value elements must be 2 characters in length.  Invalid value '{sourceStringData[i]}' encountered at array position {i} of string value {sourceStringData} and can not be converted.");
-                        }
-                        _returnBytes[i] = Convert.ToByte(_strArray[i].ToString(), 16);
+                        return null;
                     }
-                    return _returnBytes;
-
+                    else
+                    {
+                        int strLen = _strArray.Length;
+                        byte[] _returnBytes = new byte[strLen];
+                        for (int i = 0; i < strLen; i++)
+                        {
+                            if (_strArray[i].ToString().Length != 2)
+                            {
+                                throw new ArgumentException($"Hex string value elements must be 2 characters in length.  Invalid value '{_strArray[i]}' encountered at array position {i} of string value {sourceStringData} and can not be converted.", nameof(sourceStringData));
+                            }
+                            try
+                            {
+                                _returnBytes[i] = Convert.ToByte(_strArray[i].ToString(), 16);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new ArgumentException($"Invalid Hex string element value '{_strArray[i]}' encountered at array position {i} of string value {sourceStringData} and can not be converted. Error: {ex.Message}", nameof(sourceStringData));
+                            }
+                        }
+                        return _returnBytes;
+                    }
                 }
-
             }
 
         }
@@ -547,7 +594,7 @@ namespace RygDataModel
             {
                 if ((sourceStringData?.Length > 0) && (sourceStringData?.Length % 2 > 0))
                 {
-                    throw new ApplicationException($"Hex string values must be multiples of 2 characters in length.  Invalid string value {sourceStringData} can not be converted.");
+                    throw new ArgumentException($"Hex string values must be multiples of 2 characters in length.  Invalid string value {sourceStringData} can not be converted.", nameof(sourceStringData));
                 }
                 return null;
             }
@@ -557,7 +604,14 @@ namespace RygDataModel
                 byte[] _returnBytes = new byte[byteCount];
                 for (int i = 0; i < byteCount; i++)
                 {
-                    _returnBytes[i] = Convert.ToByte(sourceStringData.Substring(i * 2, 2), 16);
+                    try
+                    {
+                        _returnBytes[i] = Convert.ToByte(sourceStringData.Substring(i * 2, 2), 16);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException($"Invalid Hex string value '{sourceStringData.Substring(i * 2, 2)}' encountered at position {i * 2} of string value {sourceStringData} and can not be converted. Error: {ex.Message}", nameof(sourceStringData));
+                    }
                 }
                 return _returnBytes;
             }
