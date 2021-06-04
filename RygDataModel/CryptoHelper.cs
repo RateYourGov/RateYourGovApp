@@ -76,10 +76,11 @@ namespace RygDataModel
         /// </param>
         /// <param name="dataKeySaltValue">
         /// A Salt value to be added to the key itself to perform the encryption.  
+        /// Typically a value stored in the database unique to the record.
         /// Added as an extra layer of security so that merely having access to the securely stored settings alone 
         /// would not be enough to decrypt the data.
         /// </param>
-        /// <param name="dataKeyExtraSaltValue">
+        /// <param name="dataKeyPepperValue">
         /// An Additional Salt value to be added to the key itself to perform the encryption.  
         /// Added as an extra layer of security so that merely having access to the securely stored settings alone would 
         /// not be enough to decrypt the data.
@@ -92,11 +93,11 @@ namespace RygDataModel
         public void EncryptData(string dataToEncrypt,
                                 string dataSecretKeyValue = "",
                                 string dataKeySaltValue = "",
-                                string dataKeyExtraSaltValue = "",
+                                string dataKeyPepperValue = "",
                                 StringEncodingType outputEncodingType = StringEncodingType.Base64url)
         {
             //require at least one of the following
-            if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyExtraSaltValue.Trim().Length) < 1)
+            if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyPepperValue.Trim().Length) < 1)
             {
                 throw new ArgumentNullException(nameof(dataSecretKeyValue),
                                                   "No Secret Key or Salt Values supplied for encryption.");
@@ -106,10 +107,10 @@ namespace RygDataModel
             if (dataToEncrypt.Length > 0)
             {
                 //Calculate the weights to apply to the various keys and salts
-                double _keysLen = dataSecretKeyValue.Length + dataKeySaltValue.Length + dataKeyExtraSaltValue.Length;
+                double _keysLen = dataSecretKeyValue.Length + dataKeySaltValue.Length + dataKeyPepperValue.Length;
                 double _keyLen = Math.Floor((dataSecretKeyValue.Length / _keysLen) * 24D);
                 double _saltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
-                double _extraSaltLen = Math.Floor((dataKeyExtraSaltValue.Length / _keysLen) * 24D);
+                double _extraSaltLen = Math.Floor((dataKeyPepperValue.Length / _keysLen) * 24D);
 
                 //Add any rounding lefovers back to try and ensure that the non-code key is 24 characters long
                 if (((int)_keyLen + (int)_saltLen + (int)_extraSaltLen) < 24)
@@ -160,19 +161,19 @@ namespace RygDataModel
                     }
                     if (_xtraLen > 0)
                     {
-                        if (dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + _xtraLen))
+                        if (dataKeyPepperValue.Length >= ((int)_extraSaltLen + _xtraLen))
                         {
                             _extraSaltLen += _xtraLen;
                         }
-                        else if (_xtraLen > 2 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 3))
+                        else if (_xtraLen > 2 && dataKeyPepperValue.Length >= ((int)_extraSaltLen + 3))
                         {
                             _extraSaltLen += 3;
                         }
-                        else if (_xtraLen > 1 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 2))
+                        else if (_xtraLen > 1 && dataKeyPepperValue.Length >= ((int)_extraSaltLen + 2))
                         {
                             _extraSaltLen += 2;
                         }
-                        else if (_xtraLen > 0 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 1))
+                        else if (_xtraLen > 0 && dataKeyPepperValue.Length >= ((int)_extraSaltLen + 1))
                         {
                             _extraSaltLen += 1;
                         }
@@ -202,7 +203,7 @@ namespace RygDataModel
                 _sbDataKey.Append(_dFiller.ToString().Substring(231, 31));
                 if ((int)_extraSaltLen > 0)
                 {
-                    _sbDataKey.Insert(11, TrimOrPadText(dataKeyExtraSaltValue, (int)_extraSaltLen, 0, true));
+                    _sbDataKey.Insert(11, TrimOrPadText(dataKeyPepperValue, (int)_extraSaltLen, 0, true));
                 }
                 _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
@@ -260,9 +261,10 @@ namespace RygDataModel
         /// </param>
         /// <param name="dataKeySaltValue">
         /// The Salt value to be added to the key itself to perform the Decryption.  
+        /// Typically a value stored in the database unique to the record.
         /// NB: This must match the value originally used when encrypting the data.
         /// </param>
-        /// <param name="dataKeyExtraSaltValue">
+        /// <param name="dataKeyPepperValue">
         /// The Additional Salt value to be added to the key itself to perform the Decryption.  
         /// NB: This must match the value originally used when encrypting the data.
         /// </param>
@@ -275,12 +277,12 @@ namespace RygDataModel
                                 string dataSecretKeyValue = "",
                                 string useInitializationVectorValue = "",
                                 string dataKeySaltValue = "",
-                                string dataKeyExtraSaltValue = "",
+                                string dataKeyPepperValue = "",
                                 StringEncodingType encryptedDataEncodingType = StringEncodingType.Base64url)
         {
 
             //require at least one of the following
-            if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyExtraSaltValue.Trim().Length) < 1)
+            if ((dataSecretKeyValue.Trim().Length + dataKeySaltValue.Trim().Length + dataKeyPepperValue.Trim().Length) < 1)
             {
                 throw new ArgumentNullException(nameof(dataSecretKeyValue),
                                                  "No Secret Key or Salt Values supplied for decryption.");
@@ -317,10 +319,10 @@ namespace RygDataModel
             if (dataToDecrypt.Length > 0)
             {
                 //Calculate the weights to apply to the various keys and salts
-                double _keysLen = dataSecretKeyValue.Length + dataKeySaltValue.Length + dataKeyExtraSaltValue.Length;
+                double _keysLen = dataSecretKeyValue.Length + dataKeySaltValue.Length + dataKeyPepperValue.Length;
                 double _keyLen = Math.Floor((dataSecretKeyValue.Length / _keysLen) * 24D);
                 double _saltLen = Math.Floor((dataKeySaltValue.Length / _keysLen) * 24D);
-                double _extraSaltLen = Math.Floor((dataKeyExtraSaltValue.Length / _keysLen) * 24D);
+                double _extraSaltLen = Math.Floor((dataKeyPepperValue.Length / _keysLen) * 24D);
 
                 //Add any rounding lefovers back to try and ensure that the non-code key is 24 characters long
                 if (((int)_keyLen + (int)_saltLen + (int)_extraSaltLen) < 24)
@@ -371,19 +373,19 @@ namespace RygDataModel
                     }
                     if (_xtraLen > 0)
                     {
-                        if (dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + _xtraLen))
+                        if (dataKeyPepperValue.Length >= ((int)_extraSaltLen + _xtraLen))
                         {
                             _extraSaltLen += _xtraLen;
                         }
-                        else if (_xtraLen > 2 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 3))
+                        else if (_xtraLen > 2 && dataKeyPepperValue.Length >= ((int)_extraSaltLen + 3))
                         {
                             _extraSaltLen += 3;
                         }
-                        else if (_xtraLen > 1 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 2))
+                        else if (_xtraLen > 1 && dataKeyPepperValue.Length >= ((int)_extraSaltLen + 2))
                         {
                             _extraSaltLen += 2;
                         }
-                        else if (_xtraLen > 0 && dataKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 1))
+                        else if (_xtraLen > 0 && dataKeyPepperValue.Length >= ((int)_extraSaltLen + 1))
                         {
                             _extraSaltLen += 1;
                         }
@@ -413,7 +415,7 @@ namespace RygDataModel
                 _sbDataKey.Append(_dFiller.ToString().Substring(231, 31));
                 if ((int)_extraSaltLen > 0)
                 {
-                    _sbDataKey.Insert(11, TrimOrPadText(dataKeyExtraSaltValue, (int)_extraSaltLen, 0, true));
+                    _sbDataKey.Insert(11, TrimOrPadText(dataKeyPepperValue, (int)_extraSaltLen, 0, true));
                 }
                 _dFiller.Clear();   //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
 
@@ -478,8 +480,9 @@ namespace RygDataModel
         /// </param>
         /// <param name="hashDataSaltValue">
         /// The main Salt to be added to the actual data before hashing.
+        /// This value is typically stored in the database and is unique to the record.
         /// </param>
-        /// <param name="hashDataExtraSaltValue">
+        /// <param name="hashDataPepperValue">
         /// An additional Salt to be added to the actual data before hashing.
         /// </param>
         /// <param name="hashSecretKeyValue">
@@ -489,10 +492,11 @@ namespace RygDataModel
         /// </param>
         /// <param name="hashKeySaltValue">
         /// A Salt value to be added to the key itself to perform the hash.  
+        /// This value is typically stored in the database and is unique to the record.
         /// Added as an extra layer of security so that merely having access to the securely stored 
         /// settings alone would not be enough to calculate the hash.
         /// </param>
-        /// <param name="hashKeyExtraSaltValue">
+        /// <param name="hashKeyPepperValue">
         /// An additional Salt value to be added to the key itself to perform the hash.  
         /// Added as an extra layer of security so that merely having access to the securely 
         /// stored settings alone would not be enough to calculate the hash.
@@ -507,17 +511,17 @@ namespace RygDataModel
         /// </returns>
         public static string CreateHash256(string dataToHash,
                                            string hashDataSaltValue = "",
-                                           string hashDataExtraSaltValue = "",
+                                           string hashDataPepperValue = "",
                                            string hashSecretKeyValue = "",
                                            string hashKeySaltValue = "",
-                                           string hashKeyExtraSaltValue = "",
+                                           string hashKeyPepperValue = "",
                                            StringEncodingType hashStringOutputType = StringEncodingType.HexStringShort)
         {
             //Calculate the weights to apply to the various keys and salts
-            double _keysLen = hashSecretKeyValue.Length + hashKeySaltValue.Length + hashKeyExtraSaltValue.Length;
+            double _keysLen = hashSecretKeyValue.Length + hashKeySaltValue.Length + hashKeyPepperValue.Length;
             double _keyLen = Math.Floor((hashSecretKeyValue.Length / _keysLen) * 24D);
             double _saltLen = Math.Floor((hashKeySaltValue.Length / _keysLen) * 24D);
-            double _extraSaltLen = Math.Floor((hashKeyExtraSaltValue.Length / _keysLen) * 24D);
+            double _extraSaltLen = Math.Floor((hashKeyPepperValue.Length / _keysLen) * 24D);
 
             //Add any rounding lefovers back to try and ensure that the non-code key is 24 characters long
             if (((int)_keyLen + (int)_saltLen + (int)_extraSaltLen) < 24)
@@ -568,19 +572,19 @@ namespace RygDataModel
                 }
                 if (_xtraLen > 0)
                 {
-                    if (hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + _xtraLen))
+                    if (hashKeyPepperValue.Length >= ((int)_extraSaltLen + _xtraLen))
                     {
                         _extraSaltLen += _xtraLen;
                     }
-                    else if (_xtraLen > 2 && hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 3))
+                    else if (_xtraLen > 2 && hashKeyPepperValue.Length >= ((int)_extraSaltLen + 3))
                     {
                         _extraSaltLen += 3;
                     }
-                    else if (_xtraLen > 1 && hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 2))
+                    else if (_xtraLen > 1 && hashKeyPepperValue.Length >= ((int)_extraSaltLen + 2))
                     {
                         _extraSaltLen += 2;
                     }
-                    else if (_xtraLen > 0 && hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 1))
+                    else if (_xtraLen > 0 && hashKeyPepperValue.Length >= ((int)_extraSaltLen + 1))
                     {
                         _extraSaltLen += 1;
                     }
@@ -611,7 +615,7 @@ namespace RygDataModel
             _hFiller.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
             if ((int)_extraSaltLen > 0)
             {
-                _sbDataKey.Insert(9, TrimOrPadText(hashKeyExtraSaltValue, (int)_extraSaltLen, 0, true));
+                _sbDataKey.Insert(9, TrimOrPadText(hashKeyPepperValue, (int)_extraSaltLen, 0, true));
             }
 
             //instantiate the class with supplied key and salts
@@ -629,7 +633,7 @@ namespace RygDataModel
             _sbDataKey.Clear();
             _sbDataKey.Append(dataToHash);
             _sbDataKey.Append(hashDataSaltValue);
-            _sbDataKey.Append(hashDataExtraSaltValue);
+            _sbDataKey.Append(hashDataPepperValue);
 
             byte[] _hashResult = _hashService.ComputeHash(Encoding.UTF8.GetBytes(_sbDataKey.ToString()));
             _sbDataKey.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
@@ -646,13 +650,34 @@ namespace RygDataModel
         /// If the key is more than 128 bytes long, it is hashed (using SHA-512) to derive a 128-byte key, 
         /// if it is less than 128 bytes long, it is padded to 128 bytes.  
         /// </remarks>
-        /// <param name="dataToHash">The source data/property value to hash in UTF8 format.</param>
-        /// <param name="hashDataSaltValue">The main Salt to be added to the actual data before hashing.</param>
-        /// <param name="hashDataExtraSaltValue">An additional Salt to be added to the actual data before hashing.</param>
-        /// <param name="hashSecretKeyValue">The securely stored key to be seeded and used to perform the hash in UTF8 format.  NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 if it is stored in another format in your secured configuration.</param>
-        /// <param name="hashKeySaltValue">A Salt value to be added to the key itself to perform the hash.  Added as an extra layer of security so that merely having access to the securely stored settings alone would not be enough to calculate the hash.</param>
-        /// <param name="hashKeyExtraSaltValue">An additional Salt value to be added to the key itself to perform the hash.  Added as an extra layer of security so that merely having access to the securely stored settings alone would not be enough to calculate the hash.</param>
-        /// <param name="hashStringOutputType">The StringEncodingType format in which to return the hashed value.</param>
+        /// <param name="dataToHash">
+        /// The source data/property value to hash in UTF8 format.
+        /// </param>
+        /// <param name="hashDataSaltValue">
+        /// The main Salt to be added to the actual data before hashing.  
+        /// Typically a value unique to the record stored in the database.
+        /// </param>
+        /// <param name="hashDataPepperValue">
+        /// An additional Salt to be added to the actual data before hashing.
+        /// </param>
+        /// <param name="hashSecretKeyValue">
+        /// The securely stored key to be seeded and used to perform the hash in UTF8 format.  
+        /// NB: Use the appropriate ModelHelper/Text conversion method to translate the value to UTF8 if it is stored 
+        /// in another format in your secured configuration.
+        /// </param>
+        /// <param name="hashKeySaltValue">
+        /// A Salt value to be added to the key itself to perform the hash.  
+        /// Typically a value stored in the database unique to the record.
+        /// Added as an extra layer of security so that merely having access to the securely stored settings alone would not be enough to calculate the hash.
+        /// </param>
+        /// <param name="hashKeyPepperValue">
+        /// An additional Salt value to be added to the key itself to perform the hash.  
+        /// Added as an extra layer of security so that merely having access to the securely stored 
+        /// settings alone would not be enough to calculate the hash.
+        /// </param>
+        /// <param name="hashStringOutputType">
+        /// The StringEncodingType format in which to return the hashed value.
+        /// </param>
         /// <returns>
         /// Returns the hashed value in the requested StringEncodingType string format.  
         /// Calculates 512 bits (8 bits/byte, 64 bytes) for the hash, actual string length returned is determined by the requested output format.
@@ -660,17 +685,17 @@ namespace RygDataModel
         /// </returns>
         public static string CreateHash512(string dataToHash,
                                            string hashDataSaltValue = "",
-                                           string hashDataExtraSaltValue = "",
+                                           string hashDataPepperValue = "",
                                            string hashSecretKeyValue = "",
                                            string hashKeySaltValue = "",
-                                           string hashKeyExtraSaltValue = "",
+                                           string hashKeyPepperValue = "",
                                            StringEncodingType hashStringOutputType = StringEncodingType.HexStringShort)
         {
             //Calculate the weights to apply to the various keys and salts
-            double _keysLen = hashSecretKeyValue.Length + hashKeySaltValue.Length + hashKeyExtraSaltValue.Length;
+            double _keysLen = hashSecretKeyValue.Length + hashKeySaltValue.Length + hashKeyPepperValue.Length;
             double _keyLen = Math.Floor((hashSecretKeyValue.Length / _keysLen) * 48D);
             double _saltLen = Math.Floor((hashKeySaltValue.Length / _keysLen) * 48D);
-            double _extraSaltLen = Math.Floor((hashKeyExtraSaltValue.Length / _keysLen) * 48D);
+            double _extraSaltLen = Math.Floor((hashKeyPepperValue.Length / _keysLen) * 48D);
 
             //Add any rounding lefovers back to try and ensure that the non-code key is 24 characters long
             if (((int)_keyLen + (int)_saltLen + (int)_extraSaltLen) < 48)
@@ -721,19 +746,19 @@ namespace RygDataModel
                 }
                 if (_xtraLen > 0)
                 {
-                    if (hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + _xtraLen))
+                    if (hashKeyPepperValue.Length >= ((int)_extraSaltLen + _xtraLen))
                     {
                         _extraSaltLen += _xtraLen;
                     }
-                    else if (_xtraLen > 2 && hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 3))
+                    else if (_xtraLen > 2 && hashKeyPepperValue.Length >= ((int)_extraSaltLen + 3))
                     {
                         _extraSaltLen += 3;
                     }
-                    else if (_xtraLen > 1 && hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 2))
+                    else if (_xtraLen > 1 && hashKeyPepperValue.Length >= ((int)_extraSaltLen + 2))
                     {
                         _extraSaltLen += 2;
                     }
-                    else if (_xtraLen > 0 && hashKeyExtraSaltValue.Length >= ((int)_extraSaltLen + 1))
+                    else if (_xtraLen > 0 && hashKeyPepperValue.Length >= ((int)_extraSaltLen + 1))
                     {
                         _extraSaltLen += 1;
                     }
@@ -764,7 +789,7 @@ namespace RygDataModel
             _hFiller.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
             if ((int)_extraSaltLen > 0)
             {
-                _sbDataKey.Insert(11, TrimOrPadText(hashKeyExtraSaltValue, (int)_extraSaltLen, 0, true));
+                _sbDataKey.Insert(11, TrimOrPadText(hashKeyPepperValue, (int)_extraSaltLen, 0, true));
             }
 
             //instantiate the class with supplied key and salts
@@ -782,7 +807,7 @@ namespace RygDataModel
             _sbDataKey.Clear();
             _sbDataKey.Append(dataToHash);
             _sbDataKey.Append(hashDataSaltValue);
-            _sbDataKey.Append(hashDataExtraSaltValue);
+            _sbDataKey.Append(hashDataPepperValue);
 
             byte[] _hashResult = _hashService.ComputeHash(Encoding.UTF8.GetBytes(_sbDataKey.ToString()));
             _sbDataKey.Clear();    //clearing in case of a crash, prefer not to have the value hanging around in memory any longer than needed.
