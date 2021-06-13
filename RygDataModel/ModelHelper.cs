@@ -411,6 +411,22 @@ namespace RygDataModel
 
             return _resStr;
         }
+        /// <summary>
+        /// Reverse a string.
+        /// </summary>
+        /// <param name="stringToReverse">The string to reverse.</param>
+        /// <returns>The reversed string.</returns>
+        public static string ReverseString(string stringToReverse)
+        {
+            //this method benchmarks significantly faster than stringToReverse.ToCharArray -> array.Reverse
+            char[] strArray = new char[stringToReverse.Length];
+            int p = 0;
+            for (int c = stringToReverse.Length - 1; c >= 0; c--)
+            {
+                strArray[p++] = stringToReverse[c];
+            }
+            return new string(strArray);
+        }
         #endregion
 
         #region Data Type Conversion Helpers

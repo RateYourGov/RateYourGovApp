@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RygDataModel;
+using static RygDataModel.CryptoHelper;
 
 namespace UnitTests
 { 
@@ -12,12 +13,12 @@ namespace UnitTests
         public void TestDecryptDatabaseValue()
         {
             // Configure
-            string _encryptedData = @"F96bFAVtO71QIgJLWpM9kr6xq9xYhoO3IHUA82eQQ6LM74yRjDdle9R11YbFtqSmnDLx-YNqG6t13PQUI6KBWg;1ZtX0uH9sYOGgddqDcZulg"; //base64url is the default expected input
+            string _encryptedData = @"zR2mQFB09xiNr_RhckgAsO59nQjKpQ4ial-SUHi-hr3IP_K-zwNOTsD9Pb0brtcVyNg7cGKSDLizIjJDXMiMcQ;lGcDQfn5EqQpI9N5ArPjlw"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
             string _initializationVector = @"";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
-            string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
-            string _expectedResult = @"This is the Data to Encrypt on 2021-05-20 at 18:16:50...";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _expectedResult = @"This is the Data to Encrypt on 2021-06-13 at 15:50:09...";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -27,7 +28,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _initializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (Exception ex)
             {
@@ -43,12 +44,12 @@ namespace UnitTests
         public void TestDecryptDefaultType()
         {
             // Configure
-            string _encryptedData = @"F96bFAVtO71QIgJLWpM9kr6xq9xYhoO3IHUA82eQQ6LM74yRjDdle9R11YbFtqSmnDLx-YNqG6t13PQUI6KBWg"; //base64url is the default expected input
+            string _encryptedData = @"zR2mQFB09xiNr_RhckgAsO59nQjKpQ4ial-SUHi-hr3IP_K-zwNOTsD9Pb0brtcVyNg7cGKSDLizIjJDXMiMcQ"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
-            string _initializationVector = @"1ZtX0uH9sYOGgddqDcZulg";
+            string _initializationVector = @"lGcDQfn5EqQpI9N5ArPjlw";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
-            string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
-            string _expectedResult = @"This is the Data to Encrypt on 2021-05-20 at 18:16:50...";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _expectedResult = @"This is the Data to Encrypt on 2021-06-13 at 15:50:09...";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -58,7 +59,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _initializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (Exception ex)
             {
@@ -74,11 +75,11 @@ namespace UnitTests
         public void TestDecryptFailError()
         {
             // Configure
-            string _encryptedData = @"DTfpj4FZgbVNGQolovMMOpHJtTYBdpZ3fZObItcDZ04-kVe5K1XFawHLdh1GvTRuG0CPinhnoxv__yrUqQfw8Q"; //base64url is the default expected input
+            string _encryptedData = @"zR2mQFB09xiNr_RhckgAsO59nQjKpQ4ial-SUHi-hr3IP_K-zwNOTsD9Pb0brtcVyNg7cGKSDLizIjJDXMiMcQ"; //base64url is the default expected input
             string _dataSecretKeyValue = @"cAh_geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
-            string _initializationVector = @"VpBZYZMvHt0JOeA74UqHyA";
+            string _initializationVector = @"VaBZY0MvHt0JOeA74UqHyA";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
-            string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
 
             // Test
             CryptoHelper _decryptor = new();
@@ -88,7 +89,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _initializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (Exception ex)
             {
@@ -108,7 +109,7 @@ namespace UnitTests
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
             string _initializationVector = @"Wm-FXk9YSqET8wbE0fLw5Q";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
-            string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
 
             // Test
             try
@@ -118,7 +119,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _initializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (ArgumentException ex)
             {
@@ -146,7 +147,7 @@ namespace UnitTests
             string _dataSecretKeyValue = @"";
             string _initializationVector = @"";
             string _dataKeySaltValue = @"";
-            string _dataKeyExtraSaltValue = @"";
+            string _dataKeyPepperValue = @"";
 
             // Test
             try
@@ -156,7 +157,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _initializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (ArgumentNullException ex)
             {
@@ -184,7 +185,7 @@ namespace UnitTests
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
             string _initializationVector = @"";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
-            string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
 
             // Test
             try
@@ -194,7 +195,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _initializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (ArgumentNullException ex)
             {
@@ -223,7 +224,7 @@ namespace UnitTests
             string _unEncryptedData = $"This is the Data to Encrypt on {DateTime.Now:yyyy-MM-dd} at {DateTime.Now:HH:mm:ss}...";
             string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
             string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
-            string _dataKeyExtraSaltValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
 
             // Test
             CryptoHelper _encryptor = new();
@@ -232,7 +233,7 @@ namespace UnitTests
                 _encryptor.EncryptData(_unEncryptedData,
                                        _dataSecretKeyValue,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (Exception ex)
             {
@@ -247,7 +248,7 @@ namespace UnitTests
                                        _dataSecretKeyValue,
                                        _encryptor.EncryptedInitializationVector,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (Exception ex)
             {
@@ -267,7 +268,7 @@ namespace UnitTests
             string _unEncryptedData = $"This is the Data to Encrypt on 2021-05-07 at 20:07:13...";
             string _dataSecretKeyValue = @"";
             string _dataKeySaltValue = @"";
-            string _dataKeyExtraSaltValue = @"";
+            string _dataKeyPepperValue = @"";
 
             // Test
             try
@@ -276,7 +277,7 @@ namespace UnitTests
                 _encryptor.EncryptData(_unEncryptedData,
                                        _dataSecretKeyValue,
                                        _dataKeySaltValue,
-                                       _dataKeyExtraSaltValue);
+                                       _dataKeyPepperValue);
             }
             catch (ArgumentNullException ex)
             {
@@ -294,6 +295,74 @@ namespace UnitTests
 
             // Assert FAIL
             Assert.Fail("The expected exception was not thrown.");
+        }
+
+        //Hashing Tests
+        [TestMethod]
+        public void TestHash256()
+        {
+            // Configure
+            string _unHashedData = @"This is the Data to Encrypt on 2021-06-13 at 16:09:53..."; //base64url is the default expected input
+            string _dataSaltValue = @"sD°=+4~mAx*-12Eà";
+            string _dataPepperValue = @"Sdf#4M.f%XµiSoBzGfen";
+            string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
+            string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _expectedResult = @"901BC88A9B47FF447E4C6A4519BCDCB7F7906B6904E63E1576FA82DD20739703";
+
+            // Test
+            string _actualResult = String.Empty;
+            try
+            {
+                _actualResult = CreateHash256(_unHashedData,
+                                              _dataSaltValue,
+                                              _dataPepperValue,
+                                              _dataSecretKeyValue,
+                                              _dataKeySaltValue,
+                                              _dataKeyPepperValue);
+            }
+            catch (Exception ex)
+            {
+                // Assert FAIL
+                Assert.Fail("Unexpected Exception of Type: " + ex.GetType().ToString() + ", Message: " + ex.Message + ".");
+                return;
+            }
+
+            // Assert
+            Assert.AreEqual<string>(_expectedResult, _actualResult, "Hashed data does not match the expected result.");
+        }
+        [TestMethod]
+        public void TestHash512()
+        {
+            // Configure
+            string _unHashedData = @"This is the Data to Encrypt on 2021-06-13 at 16:09:53..."; //base64url is the default expected input
+            string _dataSaltValue = @"sD°=+4~mAx*-12Eà";
+            string _dataPepperValue = @"Sdf#4M.f%XµiSoBzGfen";
+            string _dataSecretKeyValue = @"cAh*geMP#EzU8*nT_N&kcWn'6bQNàP4Wc¤uZS_§qazD^p-d9*zIGT#A0Sd'aoMP£";
+            string _dataKeySaltValue = @"8af2996f-d627-40ac-8f84-c5532ace5a9e";
+            string _dataKeyPepperValue = @"MoEeUjtSp6c6OEELlMO1WA";
+            string _expectedResult = @"473528746FFCED7B82D316F38AAFB8EA7B406B74E088273CBD1BA5D10BC6447FD2F8B1CA2A02A2ED3259DEB11D741633A9D14F7F3C881C7F8729F777D91A84C0";
+
+            // Test
+            string _actualResult = String.Empty;
+            try
+            {
+                _actualResult = CreateHash512(_unHashedData,
+                                              _dataSaltValue,
+                                              _dataPepperValue,
+                                              _dataSecretKeyValue,
+                                              _dataKeySaltValue,
+                                              _dataKeyPepperValue);
+            }
+            catch (Exception ex)
+            {
+                // Assert FAIL
+                Assert.Fail("Unexpected Exception of Type: " + ex.GetType().ToString() + ", Message: " + ex.Message + ".");
+                return;
+            }
+
+            // Assert
+            Assert.AreEqual<string>(_expectedResult, _actualResult, "Hashed data does not match the expected result.");
         }
     }
 }

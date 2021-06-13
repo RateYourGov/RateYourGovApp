@@ -835,5 +835,24 @@ namespace UnitTests
             // Assert
             Assert.AreEqual<bool>(true, CompareByteArrayValues(_expectedResult, _actualResult), "Converted data does not match the expected result.");
         }
+
+        //Reverse String
+        [TestMethod]
+        public void TestReverseString()
+        {
+            // Test
+            try
+            {
+                // Assert
+                Assert.AreEqual<string>("987654321", ReverseString("123456789"), "Reverse String Failed.");
+            }
+            catch (Exception ex)
+            {
+                // Assert FAIL
+                Assert.Fail("Unexpected Exception of Type: " + ex.GetType().ToString() + ", Message: " + ex.Message + ".");
+                return;
+            }
+        }
+
     }
 }
